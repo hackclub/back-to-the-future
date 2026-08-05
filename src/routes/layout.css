@@ -1,5 +1,9 @@
 @import 'tailwindcss';
 
+html {
+	color-scheme: only light;
+}
+
 @font-face {
     font-family: "Ndot55Caps";
     src: url("/Ndot55Caps-Regular.otf") format("opentype");
@@ -10,10 +14,31 @@
     src: url("/Ndot57-Regular.otf") format("opentype");
 }
 
+@font-face {
+	font-family: "Geneva";
+	src: url(".ttf") format("truetype");
+}
+
+@font-face {
+	font-family: "W95F";
+	src: url("W95F.otf") format("opentype");
+}
+
 .font-ndot {
     font-family: "Ndot55Caps", sans-serif;
 }
 
 .font-ndot57 {
     font-family: "Ndot57", sans-serif;
+}
+
+.font-w95 {
+	font-family: "W95F", sans-serif;
+}
+
+.remove-font-smoothing {
+	font-smooth: never;
+	-webkit-font-smoothing : none;
+	text-rendering: optimizeSpeed;
+	image-rendering: pixelated;
 }

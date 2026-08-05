@@ -21,11 +21,16 @@
 		"prettier": "^3.8.1",
 		"prettier-plugin-svelte": "^3.4.1",
 		"prettier-plugin-tailwindcss": "^0.7.2",
-		"svelte": "^5.51.0",
+		"svelte": "^5.56.8",
 		"svelte-check": "^4.4.2",
 		"tailwindcss": "^4.1.18",
 		"typescript": "^5.9.3",
 		"vite": "^7.3.1"
+	},
+	"pnpm": {
+		"overrides": {
+			"esbuild": "0.28.1"
+		}
 	},
 	"dependencies": {
 		"@arisbh/marqueeck": "^0.5.1"

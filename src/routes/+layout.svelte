@@ -6,6 +6,9 @@
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
+<!-- <div class="fixed top-0 h-16 w-full backdrop-blur-sm bg-slate-200/20 z-4999">
+
+</div> -->
 <a href="//hackclub.com">
 	<img
 		src="/flag-orpheus-left.svg"

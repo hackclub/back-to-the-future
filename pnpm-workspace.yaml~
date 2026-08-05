@@ -3,4 +3,4 @@ allowBuilds:
 onlyBuiltDependencies:
   - esbuild
 overrides:
-  "esbuild": "npm:esbuild-wasm@0.28.1"
+  "esbuild": "^0.28.1"

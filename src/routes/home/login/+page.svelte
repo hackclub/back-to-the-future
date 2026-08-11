@@ -1,4 +1,4 @@
-<script lang='ts'>
+<!-- <script lang='ts'>
 	import back from "$lib/assets/w8back.png";
 	import {PUBLIC_HC_CLIENT_ID} from "$env/static/public"
 
@@ -25,4 +25,4 @@
 		</div>
 	</div>
 
-</div>
+</div> -->

@@ -1,4 +1,4 @@
-<script lang='ts'>
+<!-- <script lang='ts'>
 	import back from "$lib/assets/w8back.png";
 	import win8spinner from "$lib/assets/win8spinner.gif"
 	import {PUBLIC_HC_CLIENT_ID, PUBLIC_BE_URL} from "$env/static/public"
@@ -63,4 +63,4 @@
 		</div>
 	</div>
 
-</div>
+</div> -->

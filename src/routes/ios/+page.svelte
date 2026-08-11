@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
     import { slide, fade } from 'svelte/transition';
     import { goto } from '$app/navigation';
     import beloved_texture from "$lib/assets/beloved_texture.jpg";
@@ -172,4 +172,4 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->

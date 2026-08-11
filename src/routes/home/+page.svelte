@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
     import back from '$lib/assets/w8back.png';
 
     const windows8colors = [
@@ -77,3 +77,4 @@
         background-image: url('/windows8start.png');
     }
 </style>
+ -->

@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import readme from '$lib/assets/readme.png';
 	import finder from '$lib/assets/finder.png';
 	import controlstrip from '$lib/assets/controlstrip.png';
@@ -297,3 +297,4 @@
 		</div>
 	</div>
 </div>
+ -->

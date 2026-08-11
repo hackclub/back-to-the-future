@@ -693,8 +693,7 @@ A: You should use Hackatime with your chosen IDE. If there doesn't exist a way t
                                 <div class="ios-leather flex h-12 shrink-0 items-center justify-between px-3">
                                     <div></div>
                                     <div class="flex gap-2">
-                                        <button class="ios-btn ios-sans text-lg leading-none">Previous Section</button>
-                                        <button class="ios-btn ios-sans text-lg leading-none">Next Section</button>
+                                        <button onclick={currentScreen--} class="ios-btn ios-sans text-lg leading-none">Previous Section</button>
                                     </div>
                                 </div>
 

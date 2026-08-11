@@ -133,14 +133,12 @@
 		},
 		{
 			question: "I don't understand. Who do I ask for help?",
-			answer:
-				'DM @atomtables and ask away! Slack channel coming soon'
+			answer: 'DM @atomtables and ask away! Slack channel coming soon'
 		}
 	];
 </script>
 
 <svelte:window on:mousemove={handleMouseMove} />
-
 
 <div class="fixed -z-10 h-screen w-full overflow-hidden bg-slate-100 dark:bg-slate-950">
 	<div
@@ -169,7 +167,6 @@
 		{/each}
 	</div>
 </div>
-
 
 <div class="relative flex h-screen w-full items-center justify-center overflow-hidden">
 	<div
@@ -257,9 +254,10 @@
 				computer from the '00s actually connect to the Internet.
 				<br /><br />
 				If you miss that, then this You-Ship-We-Ship is for YOU!!! Yes you, that one person who's been
-				<b>looking for a reason to mess around with that ancient laptop</b> in the attic! And you over there
-				who wants to try to do something with a <b>phone from before you were born</b>! and ESPECIALLY you, that
-				person who wants to save a <b>piece of history from the landfill, or worse, ebay...</b>
+				<b>looking for a reason to mess around with that ancient laptop</b> in the attic! And you
+				over there who wants to try to do something with a <b>phone from before you were born</b>!
+				and ESPECIALLY you, that person who wants to save a
+				<b>piece of history from the landfill, or worse, ebay...</b>
 			</p>
 		</div>
 	</div>
@@ -365,19 +363,17 @@
 		<div class="flex shrink flex-col gap-4">
 			<h2 class="font-ndot text-3xl font-bold">But what should I include?</h2>
 			<div class="text-lg leading-relaxed font-medium text-slate-600 dark:text-slate-300">
-				<span class="font-light">
-                    Make sure you do the following:
-                </span>
+				<span class="font-light"> Make sure you do the following: </span>
 				<br />
 				<ul class="list-inside list-disc">
 					<li>
-						Find a program, networked or otherwise, on an <b>old</b> system that no longer works. 
-                        <ul class="font-thin ml-8 list-disc text-sm list-inside">
-                            <li>
-                                Try to aim for unique services that don't already exist, or a unique implementation that hasn't
-						been seen before.
-                            </li>
-                        </ul>
+						Find a program, networked or otherwise, on an <b>old</b> system that no longer works.
+						<ul class="ml-8 list-inside list-disc text-sm font-thin">
+							<li>
+								Try to aim for unique services that don't already exist, or a unique implementation
+								that hasn't been seen before.
+							</li>
+						</ul>
 					</li>
 					<li>
 						Use <b>lapse</b> to track your progress spent on figuring out why it no longer works.
@@ -419,7 +415,9 @@
 
 <div class="w-full p-10">
 	<div class="m-auto flex max-w-5xl">
-		<ul class="list-inside list-disc leading-relaxed font-medium text-slate-600 dark:text-slate-300">
+		<ul
+			class="list-inside list-disc leading-relaxed font-medium text-slate-600 dark:text-slate-300"
+		>
 			<li>
 				Tier 1 projects add back native functionality with no dependency, like logging into IM
 				services on the native old client.
@@ -471,10 +469,12 @@
 
 <div class="w-full bg-slate-200/30 p-10 backdrop-blur-sm dark:bg-slate-800/30">
 	<div class="m-auto flex max-w-4xl flex-col gap-8">
-		<h2 class="font-ndot text-3xl font-bold text-center">Frequently Asked Questions</h2>
+		<h2 class="font-ndot text-center text-3xl font-bold">Frequently Asked Questions</h2>
 		<div class="flex flex-col gap-6">
 			{#each faqs as faq}
-				<div class="flex flex-col gap-2 bg-slate-100/50 dark:bg-slate-900/50 p-6 rounded-xl border border-slate-300/50 dark:border-slate-700/50">
+				<div
+					class="flex flex-col gap-2 rounded-xl border border-slate-300/50 bg-slate-100/50 p-6 dark:border-slate-700/50 dark:bg-slate-900/50"
+				>
 					<h3 class="text-xl font-bold text-slate-800 dark:text-slate-200">{faq.question}</h3>
 					<p class="text-lg leading-relaxed font-medium text-slate-600 dark:text-slate-400">
 						{faq.answer}
@@ -485,26 +485,33 @@
 	</div>
 </div>
 
-<div class="w-full bg-slate-300/30 p-10 backdrop-blur-sm dark:bg-slate-700/30 border-t-2">
+<div class="w-full border-t-2 bg-slate-300/30 p-10 backdrop-blur-sm dark:bg-slate-700/30">
 	<div class="m-auto flex max-w-6xl flex-col gap-10">
 		<div class="flex flex-col gap-4 text-center">
 			<h2 class="font-ndot text-3xl font-bold">WHAT AM I WAITING FOR??? PUT ME ON RIGHT NOW!!!</h2>
 			<div class="text-lg leading-relaxed font-medium text-slate-600 dark:text-slate-300">
 				wait i need the link to join oops
 			</div>
-            <button class="mx-auto mt-4 hover:underline" onclick={() => {
-                alert("yeaaa... i'm gonna be real i didn't get this far into development. RSVP form coming soon I promise!!!!!!!\n\n\n#NOTIMPL")
-            }}>
-                <a href="#" class="font-ndot57 text-lg">yea lemme join</a>
-            </button>
+			<button
+				class="mx-auto mt-4 hover:underline"
+				onclick={() => {
+					alert(
+						"yeaaa... i'm gonna be real i didn't get this far into development. RSVP form coming soon I promise!!!!!!!\n\n\n#NOTIMPL"
+					);
+				}}
+			>
+				<a href="#" class="font-ndot57 text-lg">yea lemme join</a>
+			</button>
 		</div>
 	</div>
 </div>
 
-<footer class="w-full bg-slate-200/30 p-10 backdrop-blur-sm dark:bg-slate-800/30 text-center text-sm text-slate-500 dark:text-slate-400">
-    brought to you by <b>atomtables</b>
-    <br>
-    a hack club initiative
+<footer
+	class="w-full bg-slate-200/30 p-10 text-center text-sm text-slate-500 backdrop-blur-sm dark:bg-slate-800/30 dark:text-slate-400"
+>
+	brought to you by <b>atomtables</b>
+	<br />
+	a hack club initiative
 </footer>
 
 <style>

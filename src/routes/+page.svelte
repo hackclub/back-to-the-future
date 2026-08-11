@@ -1,594 +1,722 @@
 <script lang="ts">
-	import { onMount, tick } from 'svelte';
-	import { cubicInOut } from 'svelte/easing';
-	import { fade, fly } from 'svelte/transition';
-	import { slide } from 'svelte/transition';
-	import Marqueeck from '@arisbh/marqueeck';
+    import apple from '$lib/assets/item.png';
+    import apple2 from '$lib/assets/item2.png';
+    import controlstrip from '$lib/assets/controlstrip.png';
+    import readme from '$lib/assets/readme.png';
+    import finder from '$lib/assets/finder.png';
+    import win95 from '$lib/assets/win95.png';
+    import wincom from '$lib/assets/wincom.png';
+    import winfolder from '$lib/assets/winfolder.png';
+    import { slide } from 'svelte/transition';
+    import { goto } from '$app/navigation';
 
-	// Generate random coordinates for stars
-	let smallStars = Array.from({ length: 150 }, () => ({
-		x: Math.random() * 100,
-		y: Math.random() * 100
-	}));
+    let ind = $state(1000);
 
-	let bigStars = Array.from({ length: 50 }, () => ({
-		x: Math.random() * 100,
-		y: Math.random() * 100
-	}));
+    function draggable(node: HTMLDivElement) {
+        let isDragging = false;
+        let startX: number, startY: number;
+        let startLeft: number, startTop: number;
 
-	let mouseX = $state(0);
-	let mouseY = $state(0);
-	let timeOffset = $state(0);
-	let targetMouseX = 0;
-	let targetMouseY = 0;
-	let showText = $state(false);
+        function handleMouseDown(e: MouseEvent) {
+            if (e.target.closest('pre')) return;
+            if (e.target.closest('[contenteditable]')) return;
+            isDragging = true;
 
-	onMount(() => {
-		let frame: number;
-		let lastTime = performance.now();
+            // Get current mouse position
+            startX = e.clientX;
+            startY = e.clientY;
 
-		const loop = (time: number) => {
-			const delta = time - lastTime;
-			lastTime = time;
-			timeOffset += delta * 0.003; // Base upward speed
+            // Get current element position (default to 0 if not set)
+            startLeft = parseInt(node.style.left) || 0;
+            startTop = parseInt(node.style.top) || 0;
 
-			// Smooth inertia for mouse movement
-			mouseX += (targetMouseX - mouseX) * 0.05 * (delta / 16);
-			mouseY += (targetMouseY - mouseY) * 0.05 * (delta / 16);
+            // Listen to window events so dragging continues if mouse moves fast
+            window.addEventListener('mousemove', handleMouseMove);
+            window.addEventListener('mouseup', handleMouseUp);
 
-			frame = requestAnimationFrame(loop);
-		};
+            node.style.zIndex = String(ind++);
+        }
 
-		frame = requestAnimationFrame(loop);
+        function handleMouseMove(e: MouseEvent) {
+            if (!isDragging) return;
+            window.getSelection()?.removeAllRanges();
 
-		const timer = setTimeout(() => {
-			showText = true;
-		}, 1500);
+            // Calculate how far the mouse has moved
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
 
-		return () => {
-			cancelAnimationFrame(frame);
-			clearTimeout(timer);
-		};
-	});
+            // Get parent boundaries to restrict movement
+            const parent = node.parentElement;
+            const parentRect = parent?.getBoundingClientRect();
+            const nodeRect = node.getBoundingClientRect();
 
-	// Track mouse position for parallax effect
-	function handleMouseMove(e: MouseEvent) {
-		targetMouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-		targetMouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-	}
+            // Calculate new proposed positions
+            let newLeft = startLeft + dx;
+            let newTop = startTop + dy;
 
-	const shopItems = [
-		{
-			name: 'Ancient VR Headset',
-			image: '/ancient-vr-headset.jpeg',
-			description: 'I mean technically Quest 1 is old enough to count here???'
-		},
-		{
-			name: 'Old android wear',
-			image: '/lg-g-watch.jpg.webp',
-			description: 'Anything but playing minecraft on your wrist.'
-		},
-		{
-			name: 'Old Windows Phone',
-			image: '/old-windowsphone.jpg',
-			description: 'A relic back to the days when Microsoft had soul and an actual product.'
-		},
-		{
-			name: 'Old MacBook',
-			image: '/old-macbook.jpg',
-			description:
-				'Features the legendary glowing Apple logo, will repel Thinkpad users within 2 miles.'
-		},
-		{
-			name: 'Old iPhone',
-			image: '/old-iphone.jpg',
-			description: 'Pros: jelbrek, cons: wen eta updete.'
-		},
-		{
-			name: 'Old ThinkPad',
-			image: '/old-thinkpad.jpg',
-			description:
-				'Features the legendary glowing red dot, will repel MacBook users within 2 miles.'
-		},
-		{
-			name: 'Platform API Key',
-			image: '/platform-api-key.png',
-			description:
-				'Power the tweaks you made with more than 2 requests of data. Your choice as long as your app uses it.'
-		},
-		{
-			name: 'Spinning Rust HDD',
-			image: '/hard-drive.jpg',
-			description: 'I threw this in here just in case you wanted storage.'
-		},
-		{
-			name: 'and more???',
-			image: '',
-			description:
-				'yes!!! and more (such as other old stuff, and stuff that might be useful for your journey, requests are open!).'
-		}
-	];
+            // Keep element within the horizontal boundaries of the parent
+            const maxLeft = parentRect!.width - nodeRect.width;
+            newLeft = Math.max(0, Math.min(newLeft, maxLeft));
 
-	const faqs = [
-		{
-			question: 'When will this start?',
-			answer: 'Well into the future, hoping that you guys show interest!!!!'
-		},
-		{
-			question: 'How can I track my progress?',
-			answer:
-				'You will be using a combination of Hackatime and Lapse to track time spent researching and coding. You have to be between 13-18yo.'
-		},
-		{
-			question: 'Can I work on new software on a new device?',
-			answer: 'No, the goal is to work on software targeting an old device.'
-		},
-		{
-			question: 'Will the shop be expanded?',
-			answer: 'Absolutely! Join the Slack channel to suggest items you want to see in the shop.'
-		},
-		{
-			question: 'Can I help out?',
-			answer:
-				'Yes! DM @atomtables to find out how you can help out, whether that be through coding, design, or just spreading the word.'
-		},
-		{
-			question: "I don't understand. Who do I ask for help?",
-			answer:
-				'DM @atomtables and ask away! Slack channel coming soon'
-		}
-	];
+            // Keep element within the vertical boundaries of the parent
+            const maxTop = parentRect!.height - nodeRect.height;
+            newTop = Math.max(0, Math.min(newTop, maxTop));
+
+            // Update element styles
+            node.style.left = `${newLeft}px`;
+            node.style.top = `${newTop}px`;
+        }
+
+        function handleMouseUp() {
+            isDragging = false;
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('mouseup', handleMouseUp);
+        }
+
+        // Attach initial event listener to the element
+        node.addEventListener('mousedown', handleMouseDown);
+
+        // Clean up event listeners when the element is destroyed
+        return {
+            destroy() {
+                node.removeEventListener('mousedown', handleMouseDown);
+                window.removeEventListener('mousemove', handleMouseMove);
+                window.removeEventListener('mouseup', handleMouseUp);
+            }
+        };
+    }
+
+    let currentScreen = $state(0);
+    let currentItemIndex = $state(0);
+
+    const notes = [
+        {
+            title: 'JOIN TODAY!!!',
+            date: 'Aug 10, 2026',
+            content: `This brings us to the end of the demo!
+And so, my fellow Hackclubbers: ask not what your old tech can do for you, but what <b>you can do for your old tech.</b>
+
+If you're interested in this, consider the following platforms to begin!
+
+- Windows 9x/XP/Vista? Use something like the Win32 API to create lightweight binaries on 9x, or Qt, wxWidgets, .NET for Windows XP. (If you're using a more modern framework, try not to rely on the modern facilities you'll be blessed with.)
+- Android 1.5-7? Use an older version of Android Studio. Try to aim to use a version of Android Studio released around the time your targeted version of Android was, since that'll make your experience probably as smooth as it can be. Worst case? Use a newer version. (If your selected version of Android Studio doesn't support Wakatime directly, you can use something like wakapi-anyide.)
+
+If you're more advanced, okay with weird troubleshooting, and own a mac, you can try the following:
+- OSX 10.0-10.11: You can (try to) use a modern version of Xcode to make an app for older version of OS X. Do your research though, versions before 10.4 will strictly not work past Xcode 3.0 because they all use PPC, and other versions have incompatibilities with i386, requiring Xcode on High Sierra. OSX 10.9 SDK works somewhat okay on Xcode 26.
+- iOS 2.0-10: You'll have a lot of luck with iOS 10 if you manage to get the iOS 10 SDK on a modern version of Xcode. Versions below that, like iOS 6 and below, are going to be more difficult. If you want to build for older versions, I do have a version of wakatime that can track your coding time on Xcode built for macOS 10.9, so if you're interested in going for a very old version, then go ahead!
+
+            `
+        },
+        {
+            title: 'FAQ',
+            content:
+                `Q: What is Back to the Future?
+A: It's a Hack Club YSWS (or You-Ship-We-Ship) program. You make a program that targets an old platform, and we get you something cool (among the lines of "old" of course!)
+
+Q: I'm not a seasoned developer with 20 years of experience, how can I make an app like this?
+A: You don't need any experience! We welcome everyone, from beginners to advanced programmers. We have guides available online (on this website!!!), and are always willing to help in the Slack, no matter your targeted platform.
+    
+Q: What do I get?
+A: Depending on the <b>amount of hours</b> you code and the <b>quality</b> of your project, you'll be able to check out different prizes. You'll also get more credits based on how many versions your project can support (i.e. an app for Windows 3.x that works all the way to XP/Vista will get more points than an Android 7.x app.)
+
+Interested in a new battery for your old MacBook? You can get an iFixit grant to buy that part and some tools. Interested in a new MacBook? You can get a grant to buy something old online! The more hours you code and the higher the quality of your app, the more you can get!
+
+Q: How do I track my hours?
+A: You should use Hackatime with your chosen IDE. If there doesn't exist a way to code for your chosen platform with an IDE that supports Hackatime, you can use Lapse.
+                `
+        },
+        {
+            title: 'More info coming soon!!!',
+            date: 'Aug 8, 2026',
+            content:
+                ''
+        }
+    ];
+
+    let currentNoteIndex = $state(1);
 </script>
 
-<svelte:window on:mousemove={handleMouseMove} />
+<!-- screen one son -->
+<div class="flex h-screen w-screen items-center justify-center transition-all">
+    {#if currentScreen == 0}
+        <style>
+            /*250,218,78 254,251,179*/
+            html {
+                background: repeating-conic-gradient(#808080 0 25%, #0000 0 50%) 50% / 2px 2px;
+            }
 
-<div class="fixed -z-10 h-screen w-screen overflow-hidden bg-slate-100 dark:bg-slate-950">
-	<!-- Small slow-moving stars -->
-	<div
-		class="absolute inset-x-[-5%] inset-y-[-5%] h-[110%] w-[110%] will-change-transform"
-		style="transform: translate({mouseX * -10}px, {mouseY * -10}px)"
-	>
-		{#each smallStars as star}
-			<div
-				class="absolute rounded-full bg-black opacity-40 dark:bg-white"
-				style="left: {star.x}%; top: {(((star.y - timeOffset) % 100) + 100) %
-					100}%; width: 2px; height: 2px;"
-			></div>
-		{/each}
-	</div>
+            .checkered-yellow-bg {
+                background: repeating-conic-gradient(rgb(250, 218, 78) 0 25%, rgb(254, 251, 179) 0 50%) 50% / 2px 2px;
+            }
 
-	<!-- Big fast-moving stars -->
-	<div
-		class="absolute inset-x-[-10%] inset-y-[-10%] h-[120%] w-[120%] will-change-transform"
-		style="transform: translate({mouseX * -30}px, {mouseY * -30}px)"
-	>
-		{#each bigStars as star}
-			<div
-				class="absolute rounded-full bg-black opacity-90 dark:bg-white"
-				style="left: {star.x}%; top: {(((star.y - timeOffset * 2.5) % 100) + 100) %
-					100}%; width: 4px; height: 4px; box-shadow: 0 0 6px rgba(255,255,255,0.6);"
-			></div>
-		{/each}
-	</div>
+            .checkered-green-bg {
+                background: repeating-conic-gradient(rgb(130, 244, 134) 0 25%, rgb(217, 251, 218) 0 50%) 50% / 2px 2px;
+            }
+
+            .checkered-blue-bg {
+                background: repeating-conic-gradient(rgb(179, 179, 249) 0 25%, rgb(218, 218, 252) 0 50%) 50% / 2px 2px;
+            }
+
+            .checkered-purple-bg {
+                background: repeating-conic-gradient(rgb(217, 179, 249) 0 25%, rgb(238, 218, 252) 0 50%) 50% / 2px 2px;
+            }
+
+            .checkered-pink-bg {
+                background: repeating-conic-gradient(rgb(250, 179, 216) 0 25%, rgb(254, 218, 237) 0 50%) 50% / 2px 2px;
+            }
+
+            .checkered-gray-bg {
+                background: repeating-conic-gradient(rgb(218, 218, 218) 0 25%, rgb(239, 239, 239) 0 50%) 50% / 2px 2px;
+            }
+
+            .pinstripe {
+                background: repeating-linear-gradient(to bottom, #ffffff 0px, #ffffff 1px, #888888 1px, #888888 2px, #dddddd 2px, #dddddd 3px);
+            }
+
+            .win-btn {
+                width: 11px;
+                height: 11px;
+                background: #fff;
+                border: 1px solid #000;
+                box-shadow: inset -1px -1px 0px #808080;
+                padding: 0;
+                cursor: pointer;
+            }
+
+            br {
+                margin-bottom: 4px;
+            }
+        </style>
+
+        <div class="aspect-[4/3] h-full" transition:slide>
+            <div class="p-5">
+                <div class="box- relative aspect-[4/3] h-full min-h-120 rounded-2xl border-32 border-gray-200">
+                    <div class="h-full rounded-2xl">
+                        <div
+                            style="font-family: Geneva, sans-serif; font-size: 1px;"
+                            class="remove-font-smoothing top-0 z-500 flex h-6 w-full items-center justify-between bg-white font-black"
+                        >
+                            <img class="" src={apple} />
+                            <img class="" src={apple2} />
+                        </div>
+                        <div class="absolute h-full w-full">
+                            <div
+                                style="top: 16px; left: 16px; font-family: Helvetica, sans-serif"
+                                use:draggable
+                                class="absolute h-max w-96 border-2 border-[#fceb73] bg-[#fdffa9] text-6xl font-bold tracking-wider text-[#fdffa9] font-stretch-condensed [-webkit-text-stroke:2px_black]"
+                            >
+                                <div class=" checkered-yellow-bg h-3 w-full"></div>
+                                <span
+                                    class="remove-font-smoothing [text-shadow:-2px_-2px_0_#000,_2px_-2px_0_#000,_-2px_2px_0_#000,_2px_2px_0_#000,_5px_5px_0_#000]"
+                                    contenteditable="true"
+                                >
+                                    Back To The Future
+                                </span>
+                            </div>
+
+                            <div
+                                style="top: 240px; left: 280px; font-family: Geneva, sans-serif"
+                                use:draggable
+                                class="absolute h-max w-60 border border-black bg-[rgb(243,243,243)] font-stretch-condensed shadow-2xl"
+                            >
+                                {let windowCollapsed = $state(false)}
+                                <div
+                                    class="pinstripe remove-font-smoothing block flex h-4 w-full flex-row items-center justify-between border border-[rgb(218,218,252)] text-xs font-bold"
+                                >
+                                    <div class="win-btn mb-0.5 block opacity-0" aria-label="Collapse"></div>
+                                    <span class="block h-full bg-[rgb(243,243,243)] px-2 tracking-wider"> More Info </span>
+                                    <div onclick={(windowCollapsed = !windowCollapsed)} class="win-btn mb-0.5 block text-xs" aria-label="Collapse"></div>
+                                </div>
+                                {#if !windowCollapsed}
+                                    <div class="h-0.75 border-y-1"></div>
+                                    <div class="remove-font- grid grid-cols-2 bg-white p-2">
+                                        <button class="block flex cursor-pointer appearance-none flex-col items-center justify-center" onclick={() => (currentScreen = 1)}>
+                                            <img src={readme} class="h-8 w-8 [image-rendering:pixelated]" />
+                                            <div class="text-[10px]">Next Section</div>
+                                        </button>
+                                        <div class="flex flex-col items-center justify-center">
+                                            <img src={finder} class="h-8 w-8 [image-rendering:pixelated]" />
+                                            <div class="text-[10px]">Join us!!!</div>
+                                        </div>
+                                    </div>
+                                {/if}
+                            </div>
+
+                            <div
+                                style="top: 340px; left: 280px; font-family: Geneva, sans-serif"
+                                use:draggable
+                                class="absolute h-max w-84 border border-black bg-[rgb(243,243,243)] font-stretch-condensed shadow-2xl"
+                            >
+                                {let windowCollapsed = $state(true)}
+                                <div
+                                    class="pinstripe remove-font-smoothing block flex h-4 w-full flex-row items-center justify-between border border-[rgb(218,218,252)] text-xs font-bold"
+                                >
+                                    <div class="win-btn mb-0.5 block opacity-0" aria-label="Collapse"></div>
+                                    <span class="block h-full bg-[rgb(243,243,243)] px-2 tracking-wider"> Like Classic Macs? (or just apps)</span>
+                                    <div onclick={(windowCollapsed = !windowCollapsed)} class="win-btn mb-0.5 block text-xs" aria-label="Collapse"></div>
+                                </div>
+                                {#if !windowCollapsed}
+                                    <div class="h-0.75 border-y-1"></div>
+                                    <div class="remove-font- grid grid-cols-2 bg-white p-2">
+                                        <button class="block flex cursor-pointer appearance-none flex-col items-center justify-center" onclick={() => (currentScreen = 1)}>
+                                            <img src={readme} class="h-8 w-8 [image-rendering:pixelated]" />
+                                            <div class="text-[10px]">Create an app!</div>
+                                        </button>
+                                        <div class="flex flex-col items-center justify-center">
+                                            <img src={finder} class="h-8 w-8 [image-rendering:pixelated]" />
+                                            <div class="text-[10px]">Other guides</div>
+                                        </div>
+                                    </div>
+                                {/if}
+                            </div>
+
+                            <div
+                                use:draggable
+                                class="absolute h-max w-48 border-2 border-[rgb(166,247,175)] bg-[rgb(217,251,218)] text-lg font-extralight tracking-wider font-stretch-condensed"
+                                style="top: 128px; left: 360px;font-family: Geneva, sans-serif"
+                            >
+                                <div class=" checkered-green-bg h-3 w-full"></div>
+                                <span class="remove-font-smoothing" contenteditable="true"> a Hack Club YSWS </span>
+                            </div>
+
+                            <div
+                                use:draggable
+                                class="absolute h-max w-96 border-2 border-[rgb(198,198,250)] bg-[rgb(218,218,252)] text-sm font-extralight tracking-wider font-stretch-condensed"
+                                style="font-family: Geneva, sans-serif; top: 180px; left:20px;"
+                            >
+                                <div class=" checkered-blue-bg h-3 w-full"></div>
+                                <span class="remove-font-smoothing" contenteditable="true">
+                                    Bring obsolete devices back to the Internet-connected future. Get cool stuff to make yourself modern.
+                                </span>
+                            </div>
+
+                            <div
+                                use:draggable
+                                class="absolute h-max w-60 border-2 border-[rgb(227,198,250)] bg-[rgb(238,218,252)] text-xs font-extralight tracking-wider font-stretch-condensed"
+                                style="font-family: Geneva, sans-serif; top: 240px; left:20px;"
+                            >
+                                <div class=" checkered-purple-bg h-3 w-full"></div>
+                                <span class="remove-font-smoothing" contenteditable="true">
+                                    <b>Why?</b>
+                                    <br />
+                                    Do you remember back when you could turn on that old laptop in your attic, and just use it normally? No?
+                                    <br />
+                                    Well, let's fix that!
+                                    <br />
+                                    (by the way, you can interact with this mini Mac!)
+                                </span>
+                            </div>
+
+                            <img src={controlstrip} class="absolute bottom-0 left-0 mb-6" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {:else if currentScreen == 1}
+        <style>
+            html {
+                background-color: #008080;
+            }
+
+            .win95-font {
+                font-family: 'W95F', sans-serif;
+                letter-spacing: 0.75px;
+                -webkit-font-smoothing: none;
+                font-smooth: never;
+                -webkit-font-smoothing: none;
+                text-rendering: optimizeSpeed;
+                image-rendering: pixelated;
+                font-size: 11px;
+            }
+
+            /* Standard Win95 Bevel Styles */
+            .win95-raised {
+                background-color: #c0c0c0;
+                border-top: 2px solid #ffffff;
+                border-left: 2px solid #ffffff;
+
+                box-shadow:
+                    inset -1px -1px 0px #808080,
+                    inset 1px 1px 0px #dfdfdf;
+            }
+
+            .win95-window {
+                border-right: 1px solid #000000;
+                border-bottom: 1px solid #000000;
+            }
+
+            .win95-inset {
+                border-top: 1px solid #808080;
+                border-left: 1px solid #808080;
+                border-right: 1px solid #ffffff;
+                border-bottom: 1px solid #ffffff;
+            }
+
+            .win95-sunken {
+                background-color: #ffffff;
+                border-top: 2px solid #808080;
+                border-left: 2px solid #808080;
+                border-right: 2px solid #ffffff;
+                border-bottom: 2px solid #ffffff;
+                box-shadow:
+                    inset 1px 1px 0px #000000,
+                    inset -1px -1px 0px #dfdfdf;
+            }
+
+            .win95-titlebar {
+                background: linear-gradient(90deg, #000080, #1084d0);
+                color: white;
+            }
+
+            .win95-btn {
+                width: 16px;
+                height: 14px;
+                background: #c0c0c0;
+                border-top: 1px solid #ffffff;
+                border-left: 1px solid #ffffff;
+                border-right: 1px solid #000000;
+                border-bottom: 1px solid #000000;
+                box-shadow: inset -1px -1px 0px #808080;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                font-size: 9px;
+                cursor: pointer;
+                color: #000;
+            }
+
+            .win95-btn:active:enabled {
+                border-top: 1px solid #000000;
+                border-left: 1px solid #000000;
+                border-right: 1px solid #ffffff;
+                border-bottom: 1px solid #ffffff;
+                box-shadow: none;
+                padding-top: 1px;
+                padding-left: 1px;
+            }
+
+            .win95-action-btn {
+                background: #c0c0c0;
+                border-top: 2px solid #ffffff;
+                border-left: 2px solid #ffffff;
+                border-right: 2px solid #000000;
+                border-bottom: 2px solid #000000;
+                box-shadow: inset -1px -1px 0px #808080;
+                padding: 2px 8px;
+                cursor: pointer;
+            }
+
+            .win95-action-btn:active {
+                border-top: 2px solid #000000;
+                border-left: 2px solid #000000;
+                border-right: 2px solid #ffffff;
+                border-bottom: 2px solid #ffffff;
+                box-shadow: none;
+                padding: 3px 7px 1px 9px;
+            }
+        </style>
+
+        <div class="win95-font aspect-[4/3] h-full" transition:slide>
+            <div class="h-full p-5">
+                <div class="relative box-border aspect-[4/3] h-full min-h-120 overflow-hidden rounded-2xl border-[32px] border-gray-300 bg-[#008080] shadow-2xl">
+                    <div class="relative h-[calc(100%-28px)] w-full">
+                        <div use:draggable class="win95-raised win95-window absolute w-80 shadow-2xl" style="top: 20px; left: 32px;">
+                            {@debug currentItemIndex}
+                            <div class="win95-titlebar flex w-79 items-center justify-between px-2 py-0.5 text-xs font-bold">
+                                <span>What's the deal? (INTERACTIVE!!!)</span>
+                                <div class="no-drag flex gap-1">
+                                    <button class="win95-btn">?</button>
+                                    <button class="win95-btn">✕</button>
+                                </div>
+                            </div>
+
+                            {#if currentItemIndex == 0}
+                                <div class="flex items-start gap-3 p-3">
+                                    <div>
+                                        <h2 class="mb-1 text-sm font-bold">You ship?</h2>
+                                        <p class="text-xs leading-relaxed">
+                                            Something new, something old.<br />
+                                            or something never seen before.
+                                        </p>
+                                    </div>
+                                </div>
+                            {:else if currentItemIndex == 1}
+                                <div class="flex items-start gap-3 p-3">
+                                    <div>
+                                        <h2 class="mb-1 text-sm font-bold">We ship?</h2>
+                                        <p class="text-xs leading-relaxed">
+                                            Something tried, something true,<br />
+                                            or something worthy of the blue.
+                                        </p>
+                                    </div>
+                                </div>
+                            {:else if currentItemIndex == 2}
+                                <div class="flex items-start gap-3 p-3">
+                                    <div>
+                                        <h2 class="mb-1 text-sm font-bold">The gist</h2>
+                                        <ul class="list-inside list-disc">
+                                            <li>Create a new app that <i>backports</i> functionality from modern day.</li>
+                                            <li>
+                                                Patch an older app to <i>restore</i> functionality to work with modern day.
+                                            </li>
+                                            <li>
+                                                Make a regular app, something you like, and have it be <i>backwards-compatible</i>
+                                                with your chosen platform.
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            {:else if currentItemIndex == 3}
+                                <div class="flex items-start gap-3 p-3">
+                                    <div>
+                                        <h2 class="mb-1 text-sm font-bold">And you get?</h2>
+                                        <ul class="list-inside list-disc">
+                                            <li>A grant to get old technology, maybe to even start your next project.</li>
+                                            <li>A new gadget, part, or item (like a USB hard drive or 256MB ddr2 RAM) as an upgrade.</li>
+                                            <li>An online gift card to sites like iFixit that sell parts and tools for you to keep good tech from being e-waste.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            {/if}
+
+                            <div class="flex justify-end gap-2 p-2">
+                                <button class="win95-action-btn no-drag text-xs" onclick={() => currentItemIndex != 0 && currentItemIndex--}>Previous </button>
+                                {#if currentItemIndex != 3}
+                                    <button class="win95-action-btn no-drag text-xs font-bold" onclick={() => currentItemIndex++}>
+                                        {currentItemIndex == 1 ? 'Yo unc speak in english' : 'Next'}
+                                    </button>
+                                {/if}
+                            </div>
+                        </div>
+
+                        <div use:draggable class="win95-raised win95-window absolute w-72 shadow-2xl" style="top: 72px; left: 348px;">
+                            <div class="win95-titlebar flex items-center justify-between px-2 py-0.5 text-xs font-bold">
+                                <span>More Info</span>
+                                <div class="no-drag flex gap-1">
+                                    <button class="win95-btn">_</button>
+                                    <button class="win95-btn">□</button>
+                                    <button class="win95-btn">✕</button>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-3 border-b border-gray-400 px-2 py-1 text-xs">
+                                <span><span class="underline">F</span>ile</span>
+                                <span><span class="underline">E</span>dit</span>
+                                <span><span class="underline">V</span>iew</span>
+                                <span><span class="underline">H</span>elp</span>
+                            </div>
+
+                            <div class="win95-sunken m-1 grid h-36 grid-cols-2 gap-4 overflow-y-auto p-3">
+                                <button onclick={() => currentScreen--} class="group flex cursor-pointer flex-col items-center text-center">
+                                    <img src={winfolder} class="h-8 w-8 [image-rendering:pixelated]" alt="Section" />
+                                    <span class="mt-1 px-0.5 text-[10px] group-hover:bg-[#000080] group-hover:text-white">Previous Section</span>
+                                </button>
+                                <button onclick={() => currentScreen++} class="group flex cursor-pointer flex-col items-center text-center">
+                                    <img src={winfolder} class="h-8 w-8 [image-rendering:pixelated]" alt="Section" />
+                                    <span class="mt-1 px-0.5 text-[10px] group-hover:bg-[#000080] group-hover:text-white">Next Section</span>
+                                </button>
+                                <div class="group flex cursor-pointer flex-col items-center text-center">
+                                    <img src={win95} class="h-8 w-8 [image-rendering:pixelated]" alt="Classic App" />
+                                    <span class="mt-1 px-0.5 text-[10px] group-hover:bg-[#000080] group-hover:text-white">Make a Windows app!</span>
+                                </div>
+                                <button onclick={() => goto('/home')} class="group flex cursor-pointer flex-col items-center text-center">
+                                    <img src={wincom} class="h-8 w-8 [image-rendering:pixelated]" alt="Account" />
+                                    <span class="mt-1 px-0.5 text-[10px] group-hover:bg-[#000080] group-hover:text-white">Other guides</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div use:draggable class="win95-raised absolute w-108 shadow-2xl" style="top: 268px; left: 16px;">
+                            <div class="win95-titlebar flex items-center justify-between px-2 py-0.5 text-xs font-bold">
+                                <span>Why.txt - Notepad</span>
+                                <div class="no-drag flex gap-1">
+                                    <button class="win95-btn">_</button>
+                                    <button class="win95-btn">□</button>
+                                    <button class="win95-btn">✕</button>
+                                </div>
+                            </div>
+
+                            <div class="win95-sunken no-drag m-1 h-28 overflow-y-auto p-2 font-mono text-xs leading-tight">
+                                <pre
+                                    contenteditable="true"
+                                    class="whitespace-pre-wrap">If you're between the ages of 13-18, there might be a time in your infancy where you saw a computer from the '00s actually connect to the Internet.<br
+                                    /><br
+                                    />If you miss that, then this You-Ship-We-Ship is for YOU!!! Yes you, that one person who's been looking for a reason to mess around with that ancient laptop in the attic! And you over there who wants to try to do something with a phone from before you were born! and ESPECIALLY you, that person who wants to save a piece of history from the landfill, or worse, ebay...
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="win95-raised absolute right-0 bottom-0 left-0 z-50 flex h-7 items-center justify-between px-1">
+                        <button class="win95-action-btn flex h-5 items-center gap-1 py-0.5 text-xs font-bold tracking-wider">
+                            <img src={win95} class="[image-rendering:pixelated]" />
+                            <span class="font-w95 remove-font-smoothing">Start</span>
+                        </button>
+
+                        <div class="flex flex-1 gap-1 overflow-x-auto px-2">
+                            <div class="win95-sunken flex w-28 items-center gap-1 truncate bg-gray-200 px-2 py-0.5 text-xs font-bold">
+                                <img src={readme} class="h-3.5 w-3.5 [image-rendering:pixelated]" alt="Task Icon" />
+                                <span>Welcome</span>
+                            </div>
+                        </div>
+
+                        <div class="win95-inset flex h-5 items-center gap-2 bg-[#c0c0c0] px-3 py-0.5 text-xs">
+                            <span>12:47 AM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {:else if currentScreen == 2}
+        <style>
+            /* Classic iOS Linen Background */
+            body {
+                background-image: url('/beloved_texture.jpg');
+                background-size: 25% 25%;
+                background-repeat: repeat;
+            }
+
+            /* Skeuomorphic Leather Header */
+            .ios-leather {
+                background: linear-gradient(to bottom, #6b4d36, #412a1a);
+                border-bottom: 2px solid #20130a;
+                box-shadow:
+                    inset 0 1px 1px rgba(255, 255, 255, 0.3),
+                    0 4px 6px rgba(0, 0, 0, 0.4);
+                position: relative;
+            }
+
+            /* Stitched detailing along the leather */
+            .ios-leather::after {
+                position: absolute;
+                bottom: 2px;
+                left: 2px;
+                right: 2px;
+                height: 100%;
+                border-bottom: 1px dashed rgba(0, 0, 0, 0.5);
+                box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1);
+                pointer-events: none;
+            }
+
+            .ios-font {
+                font-family: 'Marker Felt', 'Comic Sans MS', 'Chalkboard SE', cursive, sans-serif;
+            }
+
+            .ios-sans {
+                font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            }
+
+            .ios-paper {
+                background-color: #fdf6e3;
+                background-image: 
+            /* Red Margin Line */
+                    linear-gradient(90deg, transparent 40px, rgba(234, 153, 153, 0.8) 40px, rgba(234, 153, 153, 0.8) 42px, transparent 42px),
+                    /* Blue Ruled Lines */ repeating-linear-gradient(to bottom, transparent, transparent 31px, rgba(160, 190, 220, 0.6) 31px, rgba(160, 190, 220, 0.6) 32px);
+                background-size:
+                    100% 100%,
+                    100% 32px;
+                background-attachment: local;
+                box-shadow: inset 5px 0 15px rgba(0, 0, 0, 0.05);
+            }
+
+            .ios-sidebar-paper {
+                background-color: #f5eedc;
+                background-image: repeating-linear-gradient(to bottom, transparent, transparent 43px, rgba(0, 0, 0, 0.05) 43px, rgba(0, 0, 0, 0.05) 44px);
+                border-right: 1px solid #d4cca6;
+            }
+
+            /* Glossy 3D buttons */
+            .ios-btn {
+                background: linear-gradient(to bottom, #a07a60, #63432e);
+                border: 1px solid #332013;
+                box-shadow:
+                    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                    0 1px 2px rgba(0, 0, 0, 0.4);
+                border-radius: 6px;
+                color: #fff;
+                text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
+                padding: 4px 12px;
+                font-size: 12px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+
+            .ios-btn:active {
+                background: linear-gradient(to bottom, #63432e, #a07a60);
+                box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+            }
+        </style>
+        <div class="aspect-[4/3] h-full" transition:slide>
+            <div class="h-full p-5">
+                <div class="relative box-border aspect-[4/3] h-full min-h-120 overflow-hidden rounded-3xl border-[24px] border-black bg-black shadow-2xl">
+                    <div class="ios-linen-bg relative h-full w-full overflow-hidden rounded-md">
+                        <div class="ios-sans z-50 flex h-5 w-full items-center justify-between bg-black px-2 text-[10px] font-bold text-gray-300">
+                            <div class="flex items-center gap-1">
+                                <span>iPad</span>
+                            </div>
+                            <span>12:47 AM</span>
+                            <div class="flex items-center gap-1">
+                                <span>100%</span>
+                                <div class="h-2.5 w-5 rounded-sm border border-gray-400 p-[1px]">
+                                    <div class="h-full w-full bg-white"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="absolute flex overflow-hidden rounded-lg shadow-2xl w-full h-full" style="">
+                            <div class="ios-sidebar-paper flex h-full w-48 flex-col">
+                                <div class="ios-leather after:left-2 after:bottom-2 after:right-2 flex h-12 shrink-0 items-center justify-between px-3">
+                                    <button onclick={() => goto('/')} class="ios-btn ios-sans">Accounts</button>
+                                    <span class="ios-sans text-sm font-bold text-white text-shadow-sm [text-shadow:0_-1px_0_rgba(0,0,0,0.7)]">Notes</span>
+                                    <button class="ios-btn ios-sans">+</button>
+                                </div>
+
+                                <div class="flex-1 overflow-y-auto">
+                                    {#each notes as note, i}
+                                        <div
+                                            onclick={() => (currentNoteIndex = i)}
+                                            class="ios-font flex cursor-pointer flex-col justify-center border-b border-gray-300/50 px-4 py-2 hover:bg-yellow-900/5 {currentNoteIndex ===
+                                            i
+                                                ? 'bg-yellow-900/10'
+                                                : ''}"
+                                        >
+                                            <div class="truncate text-base font-bold text-gray-800">{note.title}</div>
+                                            <div class="text-xs text-gray-500">{new Date().toLocaleDateString()}</div>
+                                        </div>
+                                    {/each}
+                                </div>
+                            </div>
+
+                            <div class="flex h-full flex-1 flex-col bg-[#fdf6e3]">
+                                <div class="ios-leather flex h-12 shrink-0 items-center justify-between px-3">
+                                    <div></div>
+                                    <div class="flex gap-2">
+                                        <button class="ios-btn ios-sans text-lg leading-none">Previous Section</button>
+                                        <button class="ios-btn ios-sans text-lg leading-none">Next Section</button>
+                                    </div>
+                                </div>
+
+                                <div class="ios-paper h-full flex-1 overflow-y-auto">
+                                    {#key currentNoteIndex}
+                                        <div class="p-8 pl-14">
+                                            <div class="ios-font text-gray-800">
+                                                <div class="mb-4 text-center text-sm text-gray-400">{new Date().toLocaleDateString()}</div>
+                                                <h1 class="mb-4 text-2xl font-bold">{notes[currentNoteIndex].title}</h1>
+
+                                                <pre contenteditable="true" class="ios-font whitespace-pre-wrap text-lg leading-[32px] text-gray-700 outline-none">{@html notes[
+                                                        currentNoteIndex
+                                                    ].content}</pre>
+                                            </div>
+                                        </div>
+                                    {/key}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {/if}
 </div>
-
-<div class="relative flex h-screen w-full items-center justify-center overflow-hidden">
-	<div
-		class="relative mx-auto flex w-full max-w-6xl flex-col items-center justify-center lg:flex-row"
-	>
-		<div
-			class="relative z-10 flex h-100 w-125 shrink-0 items-center justify-center"
-			style="perspective: 600px;"
-		>
-			<div
-				class="absolute flex h-full w-full items-center justify-center"
-				style="transform: translate({mouseX * -15}px, {mouseY * -15}px); will-change: transform;"
-			>
-				<img src="/mba.png" alt="macbook air" class="macbook absolute w-125" />
-			</div>
-			<div
-				class="absolute flex h-full w-full items-center justify-center"
-				style="transform: translate({mouseX * -10}px, {mouseY * -10}px); will-change: transform;"
-			>
-				<img src="/bb.png" alt="blackberry" class="blackberry absolute bottom-8 left-0 h-48" />
-			</div>
-			<div
-				class="absolute flex h-full w-full items-center justify-center"
-				style="transform: translate({mouseX * -5}px, {mouseY * -5}px); will-change: transform;"
-			>
-				<img src="/watch.png" alt="watch" class="watch absolute right-4 bottom-8 h-36" />
-			</div>
-		</div>
-
-		{#if showText}
-			<div transition:slide={{ axis: 'x', duration: 1200, easing: cubicInOut }}>
-				<div
-					in:fly={{ x: 40, duration: 1000, delay: 300, easing: cubicInOut }}
-					class="z-20 ml-16 flex w-100 flex-col gap-6"
-				>
-					<h1 class="font-ndot text-6xl font-black">
-						BACK TO<br />THE FUTURE
-					</h1>
-					<p class="text-xl leading-relaxed font-medium text-slate-600 dark:text-slate-300">
-						Bring obsolete devices back to the Internet-connected future. Get cool stuff to make
-						yourself modern.
-					</p>
-				</div>
-			</div>
-		{/if}
-	</div>
-
-	<!-- Scroll Down Arrow -->
-	<div
-		class="animate-bounceopacity-60 absolute bottom-8 left-1/2 flex -translate-x-1/2 transform flex-col items-center"
-	>
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			width="24"
-			height="24"
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-			stroke-linecap="round"
-			stroke-linejoin="round"
-		>
-			<path d="M12 5v14M19 12l-7 7-7-7" />
-		</svg>
-	</div>
-</div>
-
-<div class="w-screen bg-slate-200/20 p-10 backdrop-blur-sm dark:bg-slate-800/20">
-	<div class="m-auto flex max-w-5xl flex-col gap-10 lg:flex-row">
-		<div class="shrink-0">
-			<img src="/xp.png" alt="windows xp" class="shadow-lg max-lg:w-full lg:h-96" />
-			<div
-				class="flex flex-row items-center justify-center rounded-b-full bg-amber-100 p-2 text-black"
-			>
-				<audio controls class="w-16">
-					<source src="/dialup.mp3" type="audio/mpeg" />
-					Your browser does not support the audio element.
-				</audio>
-				<div class="">nostalgia warning: do not press if you are over 25.</div>
-			</div>
-		</div>
-		<div class="flex flex-col gap-4">
-			<h2 class="font-ndot text-3xl font-bold">Are you old enough to remember? Probably not...</h2>
-			<p class="text-lg leading-relaxed font-medium text-slate-600 dark:text-slate-300">
-				If you're between the ages of 13-18, there might be a time in your infancy where you saw a
-				computer from the '00s actually connect to the Internet.
-				<br /><br />
-				If you miss that, then this You-Ship-We-Ship is for YOU!!! Yes you, that one person who's been
-				<b>looking for a reason to mess around with that ancient laptop</b> in the attic! And you over there
-				who wants to try to do something with a <b>phone from before you were born</b>! and ESPECIALLY you, that
-				person who wants to save a <b>piece of history from the landfill, or worse, ebay...</b>
-			</p>
-		</div>
-	</div>
-</div>
-
-<div class="w-screen bg-slate-300/30 p-10 backdrop-blur-sm dark:bg-slate-700/30">
-	<div class="m-auto flex max-w-5xl flex-col gap-10">
-		<div class="flex flex-col gap-4">
-			<h2 class="font-ndot text-3xl font-bold">
-				Wait I don't know what to do??? How does ts (this) work?
-			</h2>
-			<p class="text-lg leading-relaxed font-medium text-slate-600 dark:text-slate-300">
-				Your goal in this project is to restore old software to run on new services. I included some
-				cool examples by people in the community below.
-			</p>
-		</div>
-	</div>
-	<Marqueeck class="mt-4" options={{ direction: 'left' }}>
-		<div
-			class="m-2 flex h-64 w-64 items-center justify-center rounded-lg bg-slate-400/50 dark:bg-slate-800/50"
-		>
-			<div class="text-center">
-				<h2 class="font-ndot text-xl font-bold">Aqua Proxy</h2>
-				<div class="mt-2 p-1 text-sm">
-					A project that helps to fix SSL issues on old versions of OS X, providing an HTTP and IMAP
-					proxy that can be used to connect to modern websites, mail servers, use native Twitter
-					integrations/apps with BlueSky, and more.
-				</div>
-				<div>
-					<a
-						href="https://github.com/wowfunhappy/aquaproxy"
-						class="font-ndot57 text-blue-500 hover:underline">Github</a
-					>
-					<a
-						href="https://forums.macrumors.com/threads/aqua-proxy-fix-connection-issues-on-os-x-10-6-10-9.2459969/"
-						class="font-ndot57 ml-4 text-blue-500 hover:underline">MacRumors</a
-					>
-				</div>
-			</div>
-		</div>
-		<div
-			class="m-2 flex h-64 w-64 items-center justify-center rounded-lg bg-slate-400/50 dark:bg-slate-800/50"
-		>
-			<div class="text-center">
-				<h2 class="font-ndot text-xl font-bold">DiscOld</h2>
-				<div class="mt-2 p-1 text-sm">
-					A jailbreak tweak for old versions of iOS that allows you to use the native Discord app on
-					iOS 7/8/9 devices as if it were 2016 and you just bought a spiffy new iPhone 5s off the
-					used market. (it is kinda old so may not work anymore)
-				</div>
-				<div>
-					<a
-						href="https://cydia.invoxiplaygames.uk/package/discold"
-						class="font-ndot57 ml-4 text-blue-500 hover:underline">InvoxiPlayGames</a
-					>
-				</div>
-			</div>
-		</div>
-		<div
-			class="m-2 flex h-64 w-64 items-center justify-center rounded-lg bg-slate-400/50 dark:bg-slate-800/50"
-		>
-			<div class="text-center">
-				<h2 class="font-ndot text-xl font-bold">Retrogram</h2>
-				<div class="mt-2 p-1 text-sm">
-					A custom server implementation AND patched app package that allows you to use the native
-					Instagram app on a custom server (hosted by them) on old versions of Windows Phone, iOS,
-					and Android, giving the full 2012 experience.
-				</div>
-				<div>
-					<a
-						href="http://rgdownload.sfproj.xyz/"
-						class="font-ndot57 ml-4 text-blue-500 hover:underline">Sfproj</a
-					>
-				</div>
-			</div>
-		</div>
-		<div
-			class="m-2 flex h-64 w-64 items-center justify-center rounded-lg bg-slate-400/50 dark:bg-slate-800/50"
-		>
-			<div class="text-center">
-				<h2 class="font-ndot text-xl font-bold">Legacy Update</h2>
-				<div class="mt-2 p-1 text-sm">
-					A tweak to Windows Update on XP, Vista, 7 et al. that allows you to receive the latest
-					updates and patches from Microsoft, even if SSL issues or down servers would normally
-					prevent you from doing so. (it even gets you embedded drivers!)
-				</div>
-				<div>
-					<a href="https://legacyupdate.net" class="font-ndot57 ml-4 text-blue-500 hover:underline"
-						>Legacy Update</a
-					>
-					<a
-						href="https://github.com/LegacyUpdate/LegacyUpdate"
-						class="font-ndot57 ml-4 text-blue-500 hover:underline">Github</a
-					>
-				</div>
-			</div>
-		</div>
-	</Marqueeck>
-</div>
-
-<div class="w-screen bg-slate-200/30 p-10 backdrop-blur-sm dark:bg-slate-800/30">
-	<div class="m-auto flex max-w-5xl flex-col gap-10 lg:flex-row">
-		<div class="flex shrink flex-col gap-4">
-			<h2 class="font-ndot text-3xl font-bold">But what should I include?</h2>
-			<div class="text-lg leading-relaxed font-medium text-slate-600 dark:text-slate-300">
-				<span class="font-light">
-                    Make sure you do the following:
-                </span>
-				<br />
-				<ul class="list-inside list-disc">
-					<li>
-						Find a program, networked or otherwise, on an <b>old</b> system that no longer works. 
-                        <ul class="font-thin ml-8 list-disc text-sm list-inside">
-                            <li>
-                                Try to aim for unique services that don't already exist, or a unique implementation that hasn't
-						been seen before.
-                            </li>
-                        </ul>
-					</li>
-					<li>
-						Use <b>lapse</b> to track your progress spent on figuring out why it no longer works.
-						<ul class="ml-8 list-inside list-disc text-sm font-thin">
-							<li>
-								You can use tools like <b>Charles</b> or <b>Burpsuite</b> to proxy requests to see what's
-								going on.
-							</li>
-							<li>
-								If the app is one that expires on old versions, like WhatsApp Desktop, you can find
-								and disable the killswitch.
-							</li>
-							<li>You should document your findings and what you were able to accomplish.</li>
-						</ul>
-					</li>
-					<li>
-						Use <b>hackatime</b> to track your progress engineering a fix, a patch, or a workaround
-						to make it work again.
-						<ul class="ml-8 list-inside list-disc text-sm font-thin">
-							<li>
-								You should try to package your app, tweak, or patch to make it easily installable on
-								"new" systems.
-							</li>
-							<li>
-								Make sure you record your progress, as well as your end result, as it may be harder
-								for others to replicate.
-							</li>
-						</ul>
-					</li>
-					<li>
-						Include a good README.md to explain your work, a video demo of your project working.
-					</li>
-				</ul>
-			</div>
-		</div>
-		<img src="/clippy.png" alt="clippy" class="w-48 shrink-0 object-contain lg:w-72" />
-	</div>
-</div>
-
-<div class="w-screen p-10">
-	<div class="m-auto flex max-w-5xl">
-		<ul class="list-inside list-disc leading-relaxed font-medium text-slate-600 dark:text-slate-300">
-			<li>
-				Tier 1 projects add back native functionality with no dependency, like logging into IM
-				services on the native old client.
-			</li>
-			<li>
-				Tier 2 projects add back native app functionality, but with some sort of external proxy or
-				workaround, like using a custom proxy to connect to the old Twitter app. (Proxies
-				self-hosted on the system are still Tier 1).
-			</li>
-			<li>
-				Tier 3 projects replace native app functionality with a custom made app by you, like a
-				custom made Twitter client for Windows Phone that uses the new API.
-			</li>
-			<li>
-				Depending on a number of factors, such as the quality, uniqueness, tier, and time spent on
-				your project, you'll get more rewards on the shop!
-			</li>
-		</ul>
-	</div>
-</div>
-
-<div class="w-screen bg-slate-300/30 p-10 backdrop-blur-sm dark:bg-slate-700/30">
-	<div class="m-auto flex max-w-6xl flex-col gap-10">
-		<div class="flex flex-col gap-4 text-center">
-			<h2 class="font-ndot text-3xl font-bold">All right, but what's in it for me?</h2>
-			<div class="text-lg leading-relaxed font-medium text-slate-600 dark:text-slate-300">
-				You get access to this amazing shop!!!
-			</div>
-		</div>
-		<div class="mt-4 flex flex-row flex-wrap justify-center gap-6">
-			{#each shopItems as item}
-				<div
-					class="flex w-full flex-col items-center gap-4 rounded-2xl border border-slate-300/50 bg-slate-100/80 p-5 shadow-xl transition-transform hover:scale-105 hover:shadow-2xl sm:flex-row md:w-[calc(50%-1.5rem)] lg:w-[calc(33%-1.5rem)] dark:border-slate-700/50 dark:bg-slate-900/80"
-				>
-					<img
-						src={item.image}
-						alt={item.name}
-						class="h-28 w-28 shrink-0 rounded-xl bg-white object-cover shadow-md"
-					/>
-					<div class="flex flex-col items-center text-center sm:items-start sm:text-left">
-						<h3 class="font-ndot mb-1 text-xl font-bold">{item.name}</h3>
-						<p class="text-sm font-medium text-slate-500 dark:text-slate-400">{item.description}</p>
-					</div>
-				</div>
-			{/each}
-		</div>
-	</div>
-</div>
-
-<div class="w-screen bg-slate-200/30 p-10 backdrop-blur-sm dark:bg-slate-800/30">
-	<div class="m-auto flex max-w-4xl flex-col gap-8">
-		<h2 class="font-ndot text-3xl font-bold text-center">Frequently Asked Questions</h2>
-		<div class="flex flex-col gap-6">
-			{#each faqs as faq}
-				<div class="flex flex-col gap-2 bg-slate-100/50 dark:bg-slate-900/50 p-6 rounded-xl border border-slate-300/50 dark:border-slate-700/50">
-					<h3 class="text-xl font-bold text-slate-800 dark:text-slate-200">{faq.question}</h3>
-					<p class="text-lg leading-relaxed font-medium text-slate-600 dark:text-slate-400">
-						{faq.answer}
-					</p>
-				</div>
-			{/each}
-		</div>
-	</div>
-</div>
-
-<div class="w-screen bg-slate-300/30 p-10 backdrop-blur-sm dark:bg-slate-700/30 border-t-2">
-	<div class="m-auto flex max-w-6xl flex-col gap-10">
-		<div class="flex flex-col gap-4 text-center">
-			<h2 class="font-ndot text-3xl font-bold">WHAT AM I WAITING FOR??? PUT ME ON RIGHT NOW!!!</h2>
-			<div class="text-lg leading-relaxed font-medium text-slate-600 dark:text-slate-300">
-				wait i need the link to join oops
-			</div>
-            <button class="mx-auto mt-4 hover:underline" onclick={() => {
-                alert("yeaaa... i'm gonna be real i didn't get this far into development. RSVP form coming soon I promise!!!!!!!\n\n\n#NOTIMPL")
-            }}>
-                <a href="#" class="font-ndot57 text-lg">yea lemme join</a>
-            </button>
-		</div>
-	</div>
-</div>
-
-<footer class="w-screen bg-slate-200/30 p-10 backdrop-blur-sm dark:bg-slate-800/30 text-center text-sm text-slate-500 dark:text-slate-400">
-    brought to you by <b>atomtables</b>
-    <br>
-    a hack club initiative
-</footer>
-
-<style>
-	@keyframes float {
-		0% {
-			transform: rotate3D(1, 0, 0, 60deg);
-			scale: 1.4;
-			opacity: 0;
-		}
-		75% {
-			opacity: 1;
-		}
-		100% {
-			transform: rotateX(0deg);
-			scale: 1;
-		}
-	}
-
-	@keyframes slideVibrate {
-		0% {
-			transform: translateX(-100px);
-			opacity: 0;
-		}
-		40% {
-			transform: translateX(0);
-			opacity: 1;
-		}
-		50% {
-			transform: translateX(0) rotate(-6deg);
-		}
-		60% {
-			transform: translateX(0) rotate(6deg);
-		}
-		70% {
-			transform: translateX(0) rotate(-6deg);
-		}
-		80% {
-			transform: translateX(0) rotate(4deg);
-		}
-		90% {
-			transform: translateX(0) rotate(-2deg);
-		}
-		100% {
-			transform: translateX(0) rotate(0deg);
-			opacity: 1;
-		}
-	}
-
-	@keyframes smoothIn {
-		0% {
-			transform: scale(0.8) translateY(30px);
-			opacity: 0;
-		}
-		100% {
-			transform: scale(1) translateY(0);
-			opacity: 1;
-		}
-	}
-
-	.macbook {
-		animation: float 1.5s ease-in-out both;
-	}
-
-	.blackberry {
-		animation: slideVibrate 1.2s ease-out 0.8s both;
-	}
-
-	.watch {
-		animation: smoothIn 1s cubic-bezier(0.2, 0.8, 0.2, 1) 1.2s both;
-	}
-
-	/* Style for restricting audio controls format (mostly supported on webkit browsers like Chrome/Safari) */
-	.custom-audio::-webkit-media-controls-timeline,
-	.custom-audio::-webkit-media-controls-current-time-display,
-	.custom-audio::-webkit-media-controls-time-remaining-display,
-	.custom-audio::-webkit-media-controls-mute-button,
-	.custom-audio::-webkit-media-controls-volume-slider {
-		display: none !important;
-	}
-
-	.custom-audio::-webkit-media-controls-panel {
-		justify-content: center;
-		background-color: transparent;
-	}
-</style>

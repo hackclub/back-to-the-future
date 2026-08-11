@@ -1,19 +1,79 @@
 @import 'tailwindcss';
 
-@font-face {
-    font-family: "Ndot55Caps";
-    src: url("/Ndot55Caps-Regular.otf") format("opentype");
+html {
+	color-scheme: only light;
 }
 
 @font-face {
-    font-family: "Ndot57";
-    src: url("/Ndot57-Regular.otf") format("opentype");
+	font-family: 'Ndot55Caps';
+	src: url('/Ndot55Caps-Regular.otf') format('opentype');
+}
+
+@font-face {
+	font-family: 'Ndot57';
+	src: url('/Ndot57-Regular.otf') format('opentype');
+}
+
+@font-face {
+	font-family: 'Geneva';
+	src: url('.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'W95F';
+	src: url('/W95F.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Segoe UI';
+  src: url('Segoe-UI-Variable-Static-Text.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Segoe UI';
+  src: url('Segoe-UI-Variable-Static-Text-Light.ttf') format('truetype');
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Segoe UI';
+  src: url('Segoe-UI-Variable-Static-Text-Semilight.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Segoe UI';
+  src: url('Segoe-UI-Variable-Static-Text-Semibold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Segoe UI';
+  src: url('Segoe-UI-Variable-Static-Text-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
 }
 
 .font-ndot {
-    font-family: "Ndot55Caps", sans-serif;
+	font-family: 'Ndot55Caps', sans-serif;
 }
 
 .font-ndot57 {
-    font-family: "Ndot57", sans-serif;
+	font-family: 'Ndot57', sans-serif;
+}
+
+.font-w95 {
+	font-family: 'W95F', sans-serif;
+}
+
+.remove-font-smoothing {
+	font-smooth: never;
+	-webkit-font-smoothing: none;
+	text-rendering: optimizeSpeed;
+	image-rendering: pixelated;
 }

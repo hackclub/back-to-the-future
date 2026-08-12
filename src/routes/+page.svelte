@@ -234,10 +234,10 @@ A: You should use Hackatime with your chosen IDE. If there doesn't exist a way t
                                             <img src={readme} class="h-8 w-8 [image-rendering:pixelated]" />
                                             <div class="text-[10px]">Next Section</div>
                                         </button>
-                                        <div class="flex flex-col items-center justify-center">
+                                        <button class="flex flex-col items-center justify-center" onclick={() => window.open("https://forms.hackclub.com/t/gA2V9LjKaDus", "__blank")}>
                                             <img src={finder} class="h-8 w-8 [image-rendering:pixelated]" />
                                             <div class="text-[10px]">Join us!!!</div>
-                                        </div>
+                                        </button>
                                     </div>
                                 {/if}
                             </div>
@@ -521,9 +521,9 @@ A: You should use Hackatime with your chosen IDE. If there doesn't exist a way t
                                     <img src={win95} class="h-8 w-8 [image-rendering:pixelated]" alt="Classic App" />
                                     <span class="mt-1 px-0.5 text-[10px] group-hover:bg-[#000080] group-hover:text-white">Make a Windows app!</span>
                                 </div>
-                                <button onclick={() => goto('/home')} class="group flex cursor-pointer flex-col items-center text-center">
+                                <button onclick={() => window.open("https://forms.hackclub.com/t/gA2V9LjKaDus", "__blank")} class="group flex cursor-pointer flex-col items-center text-center">
                                     <img src={wincom} class="h-8 w-8 [image-rendering:pixelated]" alt="Account" />
-                                    <span class="mt-1 px-0.5 text-[10px] group-hover:bg-[#000080] group-hover:text-white">Other guides</span>
+                                    <span class="mt-1 px-0.5 text-[10px] group-hover:bg-[#000080] group-hover:text-white">Join us!!!</span>
                                 </button>
                             </div>
                         </div>
@@ -668,7 +668,7 @@ A: You should use Hackatime with your chosen IDE. If there doesn't exist a way t
                         <div class="absolute flex overflow-hidden rounded-lg shadow-2xl w-full h-full" style="">
                             <div class="ios-sidebar-paper flex h-full w-48 flex-col">
                                 <div class="ios-leather after:left-2 after:bottom-2 after:right-2 flex h-12 shrink-0 items-center justify-between px-3">
-                                    <button onclick={() => goto('/')} class="ios-btn ios-sans">Accounts</button>
+                                    <button onclick={() => window.open("https://forms.hackclub.com/t/gA2V9LjKaDus", "__blank")} class="ios-btn ios-sans">Join Us!</button>
                                     <span class="ios-sans text-sm font-bold text-white text-shadow-sm [text-shadow:0_-1px_0_rgba(0,0,0,0.7)]">Notes</span>
                                     <button class="ios-btn ios-sans">+</button>
                                 </div>
@@ -695,6 +695,7 @@ A: You should use Hackatime with your chosen IDE. If there doesn't exist a way t
                                     <div class="flex gap-2">
                                         <button onclick={currentScreen--} class="ios-btn ios-sans text-lg leading-none">Previous Section</button>
                                     </div>
+                                    
                                 </div>
 
                                 <div class="ios-paper h-full flex-1 overflow-y-auto">

@@ -234,7 +234,7 @@ A: You should use Hackatime with your chosen IDE. If there doesn't exist a way t
                                             <img src={readme} class="h-8 w-8 [image-rendering:pixelated]" />
                                             <div class="text-[10px]">Next Section</div>
                                         </button>
-                                        <button class="flex flex-col items-center justify-center" onclick={() => window.open("https://forms.hackclub.com/t/gA2V9LjKaDus", "__blank")}>
+                                        <button class="flex flex-col items-center justify-center cursor-pointer" onclick={() => window.open("https://forms.hackclub.com/t/gA2V9LjKaDus", "__blank")}>
                                             <img src={finder} class="h-8 w-8 [image-rendering:pixelated]" />
                                             <div class="text-[10px]">Join us!!!</div>
                                         </button>
@@ -303,7 +303,7 @@ A: You should use Hackatime with your chosen IDE. If there doesn't exist a way t
                                     <br />
                                     Well, let's fix that!
                                     <br />
-                                    (by the way, you can interact with this mini Mac!)
+                                    (by the way, click Next Section for more information! This is (mostly) interactive.)
                                 </span>
                             </div>
 

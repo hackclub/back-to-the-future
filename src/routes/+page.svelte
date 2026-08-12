@@ -107,30 +107,6 @@ If you're more advanced, okay with weird troubleshooting, and own a mac, you can
 
             `
         },
-        {
-            title: 'FAQ',
-            content:
-                `Q: What is Back to the Future?
-A: It's a Hack Club YSWS (or You-Ship-We-Ship) program. You make a program that targets an old platform, and we get you something cool (among the lines of "old" of course!)
-
-Q: I'm not a seasoned developer with 20 years of experience, how can I make an app like this?
-A: You don't need any experience! We welcome everyone, from beginners to advanced programmers. We have guides available online (on this website!!!), and are always willing to help in the Slack, no matter your targeted platform.
-    
-Q: What do I get?
-A: Depending on the <b>amount of hours</b> you code and the <b>quality</b> of your project, you'll be able to check out different prizes. You'll also get more credits based on how many versions your project can support (i.e. an app for Windows 3.x that works all the way to XP/Vista will get more points than an Android 7.x app.)
-
-Interested in a new battery for your old MacBook? You can get an iFixit grant to buy that part and some tools. Interested in a new MacBook? You can get a grant to buy something old online! The more hours you code and the higher the quality of your app, the more you can get!
-
-Q: How do I track my hours?
-A: You should use Hackatime with your chosen IDE. If there doesn't exist a way to code for your chosen platform with an IDE that supports Hackatime, you can use Lapse.
-                `
-        },
-        {
-            title: 'More info coming soon!!!',
-            date: 'Aug 8, 2026',
-            content:
-                ''
-        }
     ];
 
     let currentNoteIndex = $state(1);
@@ -686,6 +662,16 @@ A: You should use Hackatime with your chosen IDE. If there doesn't exist a way t
                                             <div class="text-xs text-gray-500">{new Date().toLocaleDateString()}</div>
                                         </div>
                                     {/each}
+                                    <div
+                                            onclick={() => (window.open("https://hackclub.enterprise.slack.com/docs/T0266FRGM/F0BPZ1RLY0L", "__blank"))}
+                                            class="ios-font flex cursor-pointer flex-col justify-center border-b border-gray-300/50 px-4 py-2 hover:bg-yellow-900/5 {currentNoteIndex ===
+                                            i
+                                                ? 'bg-yellow-900/10'
+                                                : ''}"
+                                        >
+                                            <div class="truncate text-base font-bold text-gray-800">FAQ</div>
+                                            <div class="text-xs text-gray-500">{new Date().toLocaleDateString()}</div>
+                                        </div>
                                 </div>
                             </div>
 

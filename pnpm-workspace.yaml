@@ -1,6 +1,0 @@
-allowBuilds:
-  esbuild: true
-onlyBuiltDependencies:
-  - esbuild
-overrides:
-  'esbuild': 'npm:esbuild-wasm@0.28.1'

@@ -96,7 +96,7 @@
             content: `This brings us to the end of the demo!
 And so, my fellow Hackclubbers: ask not what your old tech can do for you, but what <b>you can do for your old tech.</b>
 
-If you're interested in this, consider the following platforms to begin!
+If you're interested in this, consider the following platforms to begin! Click Join Us! for the submission form and an invitation to the Slack channel!
 
 - Windows 9x/XP/Vista? Use something like the Win32 API to create lightweight binaries on 9x, or Qt, wxWidgets, .NET for Windows XP. (If you're using a more modern framework, try not to rely on the modern facilities you'll be blessed with.)
 - Android 1.5-7? Use an older version of Android Studio. Try to aim to use a version of Android Studio released around the time your targeted version of Android was, since that'll make your experience probably as smooth as it can be. Worst case? Use a newer version. (If your selected version of Android Studio doesn't support Wakatime directly, you can use something like wakapi-anyide.)
@@ -104,12 +104,11 @@ If you're interested in this, consider the following platforms to begin!
 If you're more advanced, okay with weird troubleshooting, and own a mac, you can try the following:
 - OSX 10.0-10.11: You can (try to) use a modern version of Xcode to make an app for older version of OS X. Do your research though, versions before 10.4 will strictly not work past Xcode 3.0 because they all use PPC, and other versions have incompatibilities with i386, requiring Xcode on High Sierra. OSX 10.9 SDK works somewhat okay on Xcode 26.
 - iOS 2.0-10: You'll have a lot of luck with iOS 10 if you manage to get the iOS 10 SDK on a modern version of Xcode. Versions below that, like iOS 6 and below, are going to be more difficult. If you want to build for older versions, I do have a version of wakatime that can track your coding time on Xcode built for macOS 10.9, so if you're interested in going for a very old version, then go ahead!
-
             `
         },
     ];
 
-    let currentNoteIndex = $state(1);
+    let currentNoteIndex = $state(0);
 </script>
 
 <!-- screen one son -->
@@ -664,10 +663,7 @@ If you're more advanced, okay with weird troubleshooting, and own a mac, you can
                                     {/each}
                                     <div
                                             onclick={() => (window.open("https://hackclub.enterprise.slack.com/docs/T0266FRGM/F0BPZ1RLY0L", "__blank"))}
-                                            class="ios-font flex cursor-pointer flex-col justify-center border-b border-gray-300/50 px-4 py-2 hover:bg-yellow-900/5 {currentNoteIndex ===
-                                            i
-                                                ? 'bg-yellow-900/10'
-                                                : ''}"
+                                            class="ios-font flex cursor-pointer flex-col justify-center border-b border-gray-300/50 px-4 py-2 hover:bg-yellow-900/5"
                                         >
                                             <div class="truncate text-base font-bold text-gray-800">FAQ</div>
                                             <div class="text-xs text-gray-500">{new Date().toLocaleDateString()}</div>

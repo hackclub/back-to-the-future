@@ -26,11 +26,6 @@
 		"typescript": "^5.9.3",
 		"vite": "^7.3.1"
 	},
-	"pnpm": {
-		"overrides": {
-			"esbuild": "0.28.1"
-		}
-	},
 	"dependencies": {
 		"@arisbh/marqueeck": "^0.5.1"
 	}

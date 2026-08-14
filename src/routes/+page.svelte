@@ -1,6 +1,7 @@
 <script lang="ts">
     import apple from '$lib/assets/item.png';
     import apple2 from '$lib/assets/item2.png';
+    import os7folder from '$lib/assets/os7folder.png';
     import controlstrip from '$lib/assets/controlstrip.png';
     import readme from '$lib/assets/readme.png';
     import finder from '$lib/assets/finder.png';
@@ -9,6 +10,10 @@
     import winfolder from '$lib/assets/winfolder.png';
     import { slide } from 'svelte/transition';
     import { goto } from '$app/navigation';
+    import powerbook from '$lib/assets/powerbook.jpg'
+    import fdisk from '$lib/assets/fdisk.jpg'
+    import ifixit from '$lib/assets/ifixit.jpg'
+    import thinkpad from '$lib/assets/thinkpad.jpg'
 
     let ind = $state(1000);
 
@@ -105,10 +110,11 @@ If you're more advanced, okay with weird troubleshooting, and own a mac, you can
 - OSX 10.0-10.11: You can (try to) use a modern version of Xcode to make an app for older version of OS X. Do your research though, versions before 10.4 will strictly not work past Xcode 3.0 because they all use PPC, and other versions have incompatibilities with i386, requiring Xcode on High Sierra. OSX 10.9 SDK works somewhat okay on Xcode 26.
 - iOS 2.0-10: You'll have a lot of luck with iOS 10 if you manage to get the iOS 10 SDK on a modern version of Xcode. Versions below that, like iOS 6 and below, are going to be more difficult. If you want to build for older versions, I do have a version of wakatime that can track your coding time on Xcode built for macOS 10.9, so if you're interested in going for a very old version, then go ahead!
             `
-        },
+        }
     ];
 
     let currentNoteIndex = $state(0);
+    let isWindowOpen = $state(true);
 </script>
 
 <!-- screen one son -->
@@ -174,6 +180,12 @@ If you're more advanced, okay with weird troubleshooting, and own a mac, you can
                             <img class="" src={apple} />
                             <img class="" src={apple2} />
                         </div>
+                        <div class="absolute flex justify-end items-center p-2 w-full remove-font-smoothing" style="font-family: Helvetica, sans-serif">
+                            <!-- <button class="z-500 flex flex-col items-center justify-center cursor-pointer" onclick={() => (isWindowOpen = true)}>
+                                <img src={os7folder} class="h-8 w-8 [image-rendering:pixelated]" />
+                                <div class="text-[10px] bg-white">What can I win?</div>
+                            </button> -->
+                        </div>
                         <div class="absolute h-full w-full">
                             <div
                                 style="top: 16px; left: 16px; font-family: Helvetica, sans-serif"
@@ -188,6 +200,65 @@ If you're more advanced, okay with weird troubleshooting, and own a mac, you can
                                     Back To The Future
                                 </span>
                             </div>
+
+                            <!-- TODO: this is the ysws shop -->
+                            {@debug isWindowOpen}
+                            {#if isWindowOpen}
+                                <div
+                                    style="top: 40px; left: 380px; font-family: Geneva, sans-serif"
+                                    use:draggable
+                                    class="absolute h-max w-64 border border-black bg-[rgb(243,243,243)] font-stretch-condensed shadow-2xl z-50"
+                                >
+                                    {let windowCollapsed = $state(true)}
+                                    <div
+                                        class="pinstripe remove-font-smoothing block flex h-4 w-full flex-row items-center justify-between border border-[rgb(218,218,252)] text-xs font-bold"
+                                    >
+                                        <div class="win-btn mb-0.5 block opacity-0" aria-label="Collapse"></div>
+                                        <span class="block h-full bg-[rgb(243,243,243)] px-2 tracking-wider"> Prizes </span>
+                                        <div onclick={() =>(windowCollapsed = !windowCollapsed)} class="win-btn mb-0.5 block text-xs" aria-label="Collapse"></div>
+                                    </div>
+                                    {#if !windowCollapsed}
+                                        <div class="h-0.75 border-y-1"></div>
+                                        <div class="remove-font-smoothing bg-white p-2 text-xs flex flex-col gap-4 overflow-y-auto max-h-96">
+                                            {let currentIndex = $state(0)}
+                                            <div class="flex flex-col">
+                                                {#if currentIndex == 0}
+                                                    <img src={powerbook}>
+                                                    <span class="text-center font-bold text-base">PowerBook G4</span>
+                                                    <span class="text-center italic">~40-50 hrs</span>
+                                                {:else if currentIndex == 1}
+                                                    <img src={fdisk}>
+                                                    <span class="text-center font-bold text-base">Floppy disks</span>
+                                                    <span class="text-center italic">~5-6 hrs</span>
+                                                {:else if currentIndex == 2}
+                                                    <img src={ifixit}>
+                                                    <span class="text-center font-bold text-base">$10 iFixit credit</span>
+                                                    <span class="text-center italic">~2-3 hrs</span>
+                                                {:else if currentIndex == 3}    
+                                                    <img src={thinkpad}>
+                                                    <span class="text-center font-bold text-base">IBM Thinkpad T60</span>
+                                                    <span class="text-center italic">~24-30 hrs</span>
+                                                {:else}
+                                                    <span class="text-center font-bold text-base">And so much more!</span>
+                                                    <span class="text-center">Want a device not listed here? Get a grant to get your own!!! Shop takes requests too!</span>
+                                                {/if}
+                                            </div>
+                                            <div class="flex flex-row gap-4 justify-center items-center">
+                                                {#if currentIndex != 0}
+                                                <button onclick={() => currentIndex--} class="cursor-pointer select-none rounded-[4px] border-1 border-black bg-white font-bold text-black ring-2 ring-black ring-offset-1 ring-offset-[#f3f3f3] subpixel-antialiased active:bg-black active:text-white w-max px-4">
+                                                    Previous
+                                                </button>
+                                                {/if}
+                                                {#if currentIndex != 4}
+                                                <button onclick={() => currentIndex++} class="cursor-pointer select-none rounded-[4px] border-1 border-black bg-white font-bold text-black ring-2 ring-black ring-offset-1 ring-offset-[#f3f3f3] subpixel-antialiased active:bg-black active:text-white w-max px-4">
+                                                    Next
+                                                </button>
+                                                {/if}
+                                            </div>
+                                        </div>
+                                    {/if}
+                                </div>
+                            {/if}
 
                             <div
                                 style="top: 240px; left: 280px; font-family: Geneva, sans-serif"
@@ -209,7 +280,10 @@ If you're more advanced, okay with weird troubleshooting, and own a mac, you can
                                             <img src={readme} class="h-8 w-8 [image-rendering:pixelated]" />
                                             <div class="text-[10px]">Next Section</div>
                                         </button>
-                                        <button class="flex flex-col items-center justify-center cursor-pointer" onclick={() => window.open("https://forms.hackclub.com/t/gA2V9LjKaDus", "__blank")}>
+                                        <button
+                                            class="flex flex-col items-center justify-center cursor-pointer"
+                                            onclick={() => window.open('https://forms.hackclub.com/t/gA2V9LjKaDus', '__blank')}
+                                        >
                                             <img src={finder} class="h-8 w-8 [image-rendering:pixelated]" />
                                             <div class="text-[10px]">Join us!!!</div>
                                         </button>
@@ -496,7 +570,10 @@ If you're more advanced, okay with weird troubleshooting, and own a mac, you can
                                     <img src={win95} class="h-8 w-8 [image-rendering:pixelated]" alt="Classic App" />
                                     <span class="mt-1 px-0.5 text-[10px] group-hover:bg-[#000080] group-hover:text-white">Make a Windows app!</span>
                                 </div>
-                                <button onclick={() => window.open("https://forms.hackclub.com/t/gA2V9LjKaDus", "__blank")} class="group flex cursor-pointer flex-col items-center text-center">
+                                <button
+                                    onclick={() => window.open('https://forms.hackclub.com/t/gA2V9LjKaDus', '__blank')}
+                                    class="group flex cursor-pointer flex-col items-center text-center"
+                                >
                                     <img src={wincom} class="h-8 w-8 [image-rendering:pixelated]" alt="Account" />
                                     <span class="mt-1 px-0.5 text-[10px] group-hover:bg-[#000080] group-hover:text-white">Join us!!!</span>
                                 </button>
@@ -643,7 +720,7 @@ If you're more advanced, okay with weird troubleshooting, and own a mac, you can
                         <div class="absolute flex overflow-hidden rounded-lg shadow-2xl w-full h-full" style="">
                             <div class="ios-sidebar-paper flex h-full w-48 flex-col">
                                 <div class="ios-leather after:left-2 after:bottom-2 after:right-2 flex h-12 shrink-0 items-center justify-between px-3">
-                                    <button onclick={() => window.open("https://forms.hackclub.com/t/gA2V9LjKaDus", "__blank")} class="ios-btn ios-sans">Join Us!</button>
+                                    <button onclick={() => window.open('https://forms.hackclub.com/t/gA2V9LjKaDus', '__blank')} class="ios-btn ios-sans">Join Us!</button>
                                     <span class="ios-sans text-sm font-bold text-white text-shadow-sm [text-shadow:0_-1px_0_rgba(0,0,0,0.7)]">Notes</span>
                                     <button class="ios-btn ios-sans">+</button>
                                 </div>
@@ -662,12 +739,12 @@ If you're more advanced, okay with weird troubleshooting, and own a mac, you can
                                         </div>
                                     {/each}
                                     <div
-                                            onclick={() => (window.open("https://hackclub.enterprise.slack.com/docs/T0266FRGM/F0BPZ1RLY0L", "__blank"))}
-                                            class="ios-font flex cursor-pointer flex-col justify-center border-b border-gray-300/50 px-4 py-2 hover:bg-yellow-900/5"
-                                        >
-                                            <div class="truncate text-base font-bold text-gray-800">FAQ</div>
-                                            <div class="text-xs text-gray-500">{new Date().toLocaleDateString()}</div>
-                                        </div>
+                                        onclick={() => window.open('https://hackclub.enterprise.slack.com/docs/T0266FRGM/F0BPZ1RLY0L', '__blank')}
+                                        class="ios-font flex cursor-pointer flex-col justify-center border-b border-gray-300/50 px-4 py-2 hover:bg-yellow-900/5"
+                                    >
+                                        <div class="truncate text-base font-bold text-gray-800">FAQ</div>
+                                        <div class="text-xs text-gray-500">{new Date().toLocaleDateString()}</div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -677,7 +754,6 @@ If you're more advanced, okay with weird troubleshooting, and own a mac, you can
                                     <div class="flex gap-2">
                                         <button onclick={currentScreen--} class="ios-btn ios-sans text-lg leading-none">Previous Section</button>
                                     </div>
-                                    
                                 </div>
 
                                 <div class="ios-paper h-full flex-1 overflow-y-auto">

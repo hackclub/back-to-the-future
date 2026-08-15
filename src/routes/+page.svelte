@@ -64,7 +64,7 @@
             newLeft = Math.max(0, Math.min(newLeft, maxLeft));
 
             // Keep element within the vertical boundaries of the parent
-            const maxTop = parentRect!.height - nodeRect.height;
+            const maxTop = parentRect!.height - nodeRect.height - 24;
             newTop = Math.max(0, Math.min(newTop, maxTop));
 
             // Update element styles
@@ -341,6 +341,17 @@ If you're more advanced, okay with weird troubleshooting, and own a mac, you can
 
                             <div
                                 use:draggable
+                                class="absolute h-max w-72 border-2 border-[rgb(218,218,218)] bg-[rgb(218,218,218)] text-sm font-extralight tracking-wider font-stretch-condensed"
+                                style="font-family: Geneva, sans-serif; top: 422px; left:375px;"
+                            >
+                                <div class=" checkered-gray-bg h-3 w-full"></div>
+                                <span class="remove-font-smoothing text-[10px]" contenteditable="true">
+                                    made w/l &lt;&gt; by atomtables (adithiya venkatakrishnan)
+                                </span>
+                            </div>
+
+                            <div
+                                use:draggable
                                 class="absolute h-max w-60 border-2 border-[rgb(227,198,250)] bg-[rgb(238,218,252)] text-xs font-extralight tracking-wider font-stretch-condensed"
                                 style="font-family: Geneva, sans-serif; top: 240px; left:20px;"
                             >
@@ -599,6 +610,11 @@ If you're more advanced, okay with weird troubleshooting, and own a mac, you can
                                 </pre>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="absolute bottom-6.5 right-0 text-white text-right p-0.5">
+                        <div>Back to the Future</div>
+                        <div>Still by atomtables (adithiya venkatakrishnan)</div>
                     </div>
 
                     <div class="win95-raised absolute right-0 bottom-0 left-0 z-50 flex h-7 items-center justify-between px-1">

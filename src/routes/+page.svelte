@@ -330,6 +330,15 @@ If you're more advanced, okay with weird troubleshooting, and own a mac, you can
 
                             <div
                                 use:draggable
+                                class="absolute h-max w-48 border-2 border-[rgb(255,192,226)] bg-[rgb(254,218,237)] text-xs font-extralight tracking-wider font-stretch-condensed"
+                                style="top: 148px; left: 120px;font-family: Geneva, sans-serif"
+                            >
+                                <div class=" checkered-pink-bg h-3 w-full"></div>
+                                <span class="remove-font-smoothing" contenteditable="true"> running until Sept. 7!!! </span>
+                            </div>
+
+                            <div
+                                use:draggable
                                 class="absolute h-max w-96 border-2 border-[rgb(198,198,250)] bg-[rgb(218,218,252)] text-sm font-extralight tracking-wider font-stretch-condensed"
                                 style="font-family: Geneva, sans-serif; top: 180px; left:20px;"
                             >

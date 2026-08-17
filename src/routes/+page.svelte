@@ -94,6 +94,18 @@
     let currentScreen = $state(0);
     let currentItemIndex = $state(0);
 
+    let viewportWidth = $state(0);
+    let viewportHeight = $state(0);
+
+    // Fixed resolution target for your vintage OS desktop
+    const VIRTUAL_WIDTH = 800;
+    const VIRTUAL_HEIGHT = 600;
+
+    // Calculate scale factor automatically
+    let scale = $derived(
+        Math.min(viewportWidth / VIRTUAL_WIDTH, viewportHeight / VIRTUAL_HEIGHT, 1)
+    );
+
     const notes = [
         {
             title: 'JOIN TODAY!!!',
@@ -116,6 +128,8 @@ If you're more advanced, okay with weird troubleshooting, and own a mac, you can
     let currentNoteIndex = $state(0);
     let isWindowOpen = $state(true);
 </script>
+
+<svelte:window bind:innerWidth={viewportWidth} bind:innerHeight={viewportHeight} />
 
 <!-- screen one son -->
 <div class="flex h-screen w-screen items-center justify-center transition-all">
@@ -169,214 +183,219 @@ If you're more advanced, okay with weird troubleshooting, and own a mac, you can
             }
         </style>
 
-        <div class="aspect-[4/3] h-full" transition:slide>
-            <div class="p-5">
-                <div class="box- relative aspect-[4/3] h-full min-h-120 rounded-2xl border-32 border-gray-200">
-                    <div class="h-full rounded-2xl">
-                        <div
-                            style="font-family: Geneva, sans-serif; font-size: 1px;"
-                            class="remove-font-smoothing top-0 z-500 flex h-6 w-full items-center justify-between bg-white font-black"
-                        >
-                            <img class="" src={apple} />
-                            <img class="" src={apple2} />
-                        </div>
-                        <div class="absolute flex justify-end items-center p-2 w-full remove-font-smoothing" style="font-family: Helvetica, sans-serif">
-                            <!-- <button class="z-500 flex flex-col items-center justify-center cursor-pointer" onclick={() => (isWindowOpen = true)}>
-                                <img src={os7folder} class="h-8 w-8 [image-rendering:pixelated]" />
-                                <div class="text-[10px] bg-white">What can I win?</div>
-                            </button> -->
-                        </div>
-                        <div class="absolute h-full w-full">
+        <div
+            class="relative origin-center transition-transform duration-75"
+            style="width: {VIRTUAL_WIDTH}px; height: {VIRTUAL_HEIGHT}px; transform: scale({scale});"
+        >
+            <div class="aspect-[4/3] h-full" transition:slide>
+                <div class="p-5">
+                    <div class="box- relative aspect-[4/3] h-full min-h-120 rounded-2xl border-32 border-gray-200">
+                        <div class="h-full rounded-2xl">
                             <div
-                                style="top: 16px; left: 16px; font-family: Helvetica, sans-serif"
-                                use:draggable
-                                class="absolute h-max w-96 border-2 border-[#fceb73] bg-[#fdffa9] text-6xl font-bold tracking-wider text-[#fdffa9] font-stretch-condensed [-webkit-text-stroke:2px_black]"
+                                style="font-family: Geneva, sans-serif; font-size: 1px;"
+                                class="remove-font-smoothing top-0 z-500 flex h-6 w-full items-center justify-between bg-white font-black"
                             >
-                                <div class=" checkered-yellow-bg h-3 w-full"></div>
-                                <span
-                                    class="remove-font-smoothing [text-shadow:-2px_-2px_0_#000,_2px_-2px_0_#000,_-2px_2px_0_#000,_2px_2px_0_#000,_5px_5px_0_#000]"
-                                    contenteditable="true"
-                                >
-                                    Back To The Future
-                                </span>
+                                <img class="" src={apple} />
+                                <img class="" src={apple2} />
                             </div>
-
-                            <!-- TODO: this is the ysws shop -->
-                            {@debug isWindowOpen}
-                            {#if isWindowOpen}
+                            <div class="absolute flex justify-end items-center p-2 w-full remove-font-smoothing" style="font-family: Helvetica, sans-serif">
+                                <!-- <button class="z-500 flex flex-col items-center justify-center cursor-pointer" onclick={() => (isWindowOpen = true)}>
+                                    <img src={os7folder} class="h-8 w-8 [image-rendering:pixelated]" />
+                                    <div class="text-[10px] bg-white">What can I win?</div>
+                                </button> -->
+                            </div>
+                            <div class="absolute h-full w-full">
                                 <div
-                                    style="top: 40px; left: 380px; font-family: Geneva, sans-serif"
+                                    style="top: 16px; left: 16px; font-family: Helvetica, sans-serif"
                                     use:draggable
-                                    class="absolute h-max w-64 border border-black bg-[rgb(243,243,243)] font-stretch-condensed shadow-2xl z-50"
+                                    class="absolute h-max w-96 border-2 border-[#fceb73] bg-[#fdffa9] text-6xl font-bold tracking-wider text-[#fdffa9] font-stretch-condensed [-webkit-text-stroke:2px_black]"
+                                >
+                                    <div class=" checkered-yellow-bg h-3 w-full"></div>
+                                    <span
+                                        class="remove-font-smoothing [text-shadow:-2px_-2px_0_#000,_2px_-2px_0_#000,_-2px_2px_0_#000,_2px_2px_0_#000,_5px_5px_0_#000]"
+                                        contenteditable="true"
+                                    >
+                                        Back To The Future
+                                    </span>
+                                </div>
+
+                                <!-- TODO: this is the ysws shop -->
+                                {@debug isWindowOpen}
+                                {#if isWindowOpen}
+                                    <div
+                                        style="top: 40px; left: 380px; font-family: Geneva, sans-serif"
+                                        use:draggable
+                                        class="absolute h-max w-64 border border-black bg-[rgb(243,243,243)] font-stretch-condensed shadow-2xl z-50"
+                                    >
+                                        {let windowCollapsed = $state(true)}
+                                        <div
+                                            class="pinstripe remove-font-smoothing block flex h-4 w-full flex-row items-center justify-between border border-[rgb(218,218,252)] text-xs font-bold"
+                                        >
+                                            <div class="win-btn mb-0.5 block opacity-0" aria-label="Collapse"></div>
+                                            <span class="block h-full bg-[rgb(243,243,243)] px-2 tracking-wider"> Prizes </span>
+                                            <div onclick={() =>(windowCollapsed = !windowCollapsed)} class="win-btn mb-0.5 block text-xs" aria-label="Collapse"></div>
+                                        </div>
+                                        {#if !windowCollapsed}
+                                            <div class="h-0.75 border-y-1"></div>
+                                            <div class="remove-font-smoothing bg-white p-2 text-xs flex flex-col gap-4 overflow-y-auto max-h-96">
+                                                {let currentIndex = $state(0)}
+                                                <div class="flex flex-col">
+                                                    {#if currentIndex == 0}
+                                                        <img src={powerbook}>
+                                                        <span class="text-center font-bold text-base">PowerBook G4</span>
+                                                        <span class="text-center italic">~40-50 hrs</span>
+                                                    {:else if currentIndex == 1}
+                                                        <img src={fdisk}>
+                                                        <span class="text-center font-bold text-base">Floppy disks</span>
+                                                        <span class="text-center italic">~5-6 hrs</span>
+                                                    {:else if currentIndex == 2}
+                                                        <img src={ifixit}>
+                                                        <span class="text-center font-bold text-base">$10 iFixit credit</span>
+                                                        <span class="text-center italic">~2-3 hrs</span>
+                                                    {:else if currentIndex == 3}    
+                                                        <img src={thinkpad}>
+                                                        <span class="text-center font-bold text-base">IBM Thinkpad T60</span>
+                                                        <span class="text-center italic">~24-30 hrs</span>
+                                                    {:else}
+                                                        <span class="text-center font-bold text-base">And so much more!</span>
+                                                        <span class="text-center">Want a device not listed here? Get a grant to get your own!!! Shop takes requests too!</span>
+                                                    {/if}
+                                                </div>
+                                                <div class="flex flex-row gap-4 justify-center items-center">
+                                                    {#if currentIndex != 0}
+                                                    <button onclick={() => currentIndex--} class="cursor-pointer select-none rounded-[4px] border-1 border-black bg-white font-bold text-black ring-2 ring-black ring-offset-1 ring-offset-[#f3f3f3] subpixel-antialiased active:bg-black active:text-white w-max px-4">
+                                                        Previous
+                                                    </button>
+                                                    {/if}
+                                                    {#if currentIndex != 4}
+                                                    <button onclick={() => currentIndex++} class="cursor-pointer select-none rounded-[4px] border-1 border-black bg-white font-bold text-black ring-2 ring-black ring-offset-1 ring-offset-[#f3f3f3] subpixel-antialiased active:bg-black active:text-white w-max px-4">
+                                                        Next
+                                                    </button>
+                                                    {/if}
+                                                </div>
+                                            </div>
+                                        {/if}
+                                    </div>
+                                {/if}
+
+                                <div
+                                    style="top: 240px; left: 408px; font-family: Geneva, sans-serif"
+                                    use:draggable
+                                    class="absolute h-max w-60 border border-black bg-[rgb(243,243,243)] font-stretch-condensed shadow-2xl"
+                                >
+                                    {let windowCollapsed = $state(false)}
+                                    <div
+                                        class="pinstripe remove-font-smoothing block flex h-4 w-full flex-row items-center justify-between border border-[rgb(218,218,252)] text-xs font-bold"
+                                    >
+                                        <div class="win-btn mb-0.5 block opacity-0" aria-label="Collapse"></div>
+                                        <span class="block h-full bg-[rgb(243,243,243)] px-2 tracking-wider"> More Info </span>
+                                        <div onclick={(windowCollapsed = !windowCollapsed)} class="win-btn mb-0.5 block text-xs" aria-label="Collapse"></div>
+                                    </div>
+                                    {#if !windowCollapsed}
+                                        <div class="h-0.75 border-y-1"></div>
+                                        <div class="remove-font- grid grid-cols-2 bg-white p-2">
+                                            <button class="block flex cursor-pointer appearance-none flex-col items-center justify-center" onclick={() => (currentScreen = 1)}>
+                                                <img src={readme} class="h-8 w-8 [image-rendering:pixelated]" />
+                                                <div class="text-[10px]">Next Section</div>
+                                            </button>
+                                            <button
+                                                class="flex flex-col items-center justify-center cursor-pointer"
+                                                onclick={() => window.open('https://forms.hackclub.com/t/gA2V9LjKaDus', '__blank')}
+                                            >
+                                                <img src={finder} class="h-8 w-8 [image-rendering:pixelated]" />
+                                                <div class="text-[10px]">Join us!!!</div>
+                                            </button>
+                                        </div>
+                                    {/if}
+                                </div>
+
+                                <div
+                                    style="top: 340px; left: 280px; font-family: Geneva, sans-serif"
+                                    use:draggable
+                                    class="absolute h-max w-84 border border-black bg-[rgb(243,243,243)] font-stretch-condensed shadow-2xl"
                                 >
                                     {let windowCollapsed = $state(true)}
                                     <div
                                         class="pinstripe remove-font-smoothing block flex h-4 w-full flex-row items-center justify-between border border-[rgb(218,218,252)] text-xs font-bold"
                                     >
                                         <div class="win-btn mb-0.5 block opacity-0" aria-label="Collapse"></div>
-                                        <span class="block h-full bg-[rgb(243,243,243)] px-2 tracking-wider"> Prizes </span>
-                                        <div onclick={() =>(windowCollapsed = !windowCollapsed)} class="win-btn mb-0.5 block text-xs" aria-label="Collapse"></div>
+                                        <span class="block h-full bg-[rgb(243,243,243)] px-2 tracking-wider"> Like Classic Macs? (or just apps)</span>
+                                        <div onclick={(windowCollapsed = !windowCollapsed)} class="win-btn mb-0.5 block text-xs" aria-label="Collapse"></div>
                                     </div>
                                     {#if !windowCollapsed}
                                         <div class="h-0.75 border-y-1"></div>
-                                        <div class="remove-font-smoothing bg-white p-2 text-xs flex flex-col gap-4 overflow-y-auto max-h-96">
-                                            {let currentIndex = $state(0)}
-                                            <div class="flex flex-col">
-                                                {#if currentIndex == 0}
-                                                    <img src={powerbook}>
-                                                    <span class="text-center font-bold text-base">PowerBook G4</span>
-                                                    <span class="text-center italic">~40-50 hrs</span>
-                                                {:else if currentIndex == 1}
-                                                    <img src={fdisk}>
-                                                    <span class="text-center font-bold text-base">Floppy disks</span>
-                                                    <span class="text-center italic">~5-6 hrs</span>
-                                                {:else if currentIndex == 2}
-                                                    <img src={ifixit}>
-                                                    <span class="text-center font-bold text-base">$10 iFixit credit</span>
-                                                    <span class="text-center italic">~2-3 hrs</span>
-                                                {:else if currentIndex == 3}    
-                                                    <img src={thinkpad}>
-                                                    <span class="text-center font-bold text-base">IBM Thinkpad T60</span>
-                                                    <span class="text-center italic">~24-30 hrs</span>
-                                                {:else}
-                                                    <span class="text-center font-bold text-base">And so much more!</span>
-                                                    <span class="text-center">Want a device not listed here? Get a grant to get your own!!! Shop takes requests too!</span>
-                                                {/if}
-                                            </div>
-                                            <div class="flex flex-row gap-4 justify-center items-center">
-                                                {#if currentIndex != 0}
-                                                <button onclick={() => currentIndex--} class="cursor-pointer select-none rounded-[4px] border-1 border-black bg-white font-bold text-black ring-2 ring-black ring-offset-1 ring-offset-[#f3f3f3] subpixel-antialiased active:bg-black active:text-white w-max px-4">
-                                                    Previous
-                                                </button>
-                                                {/if}
-                                                {#if currentIndex != 4}
-                                                <button onclick={() => currentIndex++} class="cursor-pointer select-none rounded-[4px] border-1 border-black bg-white font-bold text-black ring-2 ring-black ring-offset-1 ring-offset-[#f3f3f3] subpixel-antialiased active:bg-black active:text-white w-max px-4">
-                                                    Next
-                                                </button>
-                                                {/if}
+                                        <div class="remove-font- grid grid-cols-2 bg-white p-2">
+                                            <button class="block flex cursor-pointer appearance-none flex-col items-center justify-center" onclick={() => (currentScreen = 1)}>
+                                                <img src={readme} class="h-8 w-8 [image-rendering:pixelated]" />
+                                                <div class="text-[10px]">Create an app!</div>
+                                            </button>
+                                            <div class="flex flex-col items-center justify-center">
+                                                <img src={finder} class="h-8 w-8 [image-rendering:pixelated]" />
+                                                <div class="text-[10px]">Other guides</div>
                                             </div>
                                         </div>
                                     {/if}
                                 </div>
-                            {/if}
 
-                            <div
-                                style="top: 240px; left: 280px; font-family: Geneva, sans-serif"
-                                use:draggable
-                                class="absolute h-max w-60 border border-black bg-[rgb(243,243,243)] font-stretch-condensed shadow-2xl"
-                            >
-                                {let windowCollapsed = $state(false)}
                                 <div
-                                    class="pinstripe remove-font-smoothing block flex h-4 w-full flex-row items-center justify-between border border-[rgb(218,218,252)] text-xs font-bold"
+                                    use:draggable
+                                    class="absolute h-max w-48 border-2 border-[rgb(166,247,175)] bg-[rgb(217,251,218)] text-lg font-extralight tracking-wider font-stretch-condensed"
+                                    style="top: 128px; left: 360px;font-family: Geneva, sans-serif"
                                 >
-                                    <div class="win-btn mb-0.5 block opacity-0" aria-label="Collapse"></div>
-                                    <span class="block h-full bg-[rgb(243,243,243)] px-2 tracking-wider"> More Info </span>
-                                    <div onclick={(windowCollapsed = !windowCollapsed)} class="win-btn mb-0.5 block text-xs" aria-label="Collapse"></div>
+                                    <div class=" checkered-green-bg h-3 w-full"></div>
+                                    <span class="remove-font-smoothing" contenteditable="true"> a Hack Club YSWS </span>
                                 </div>
-                                {#if !windowCollapsed}
-                                    <div class="h-0.75 border-y-1"></div>
-                                    <div class="remove-font- grid grid-cols-2 bg-white p-2">
-                                        <button class="block flex cursor-pointer appearance-none flex-col items-center justify-center" onclick={() => (currentScreen = 1)}>
-                                            <img src={readme} class="h-8 w-8 [image-rendering:pixelated]" />
-                                            <div class="text-[10px]">Next Section</div>
-                                        </button>
-                                        <button
-                                            class="flex flex-col items-center justify-center cursor-pointer"
-                                            onclick={() => window.open('https://forms.hackclub.com/t/gA2V9LjKaDus', '__blank')}
-                                        >
-                                            <img src={finder} class="h-8 w-8 [image-rendering:pixelated]" />
-                                            <div class="text-[10px]">Join us!!!</div>
-                                        </button>
-                                    </div>
-                                {/if}
-                            </div>
 
-                            <div
-                                style="top: 340px; left: 280px; font-family: Geneva, sans-serif"
-                                use:draggable
-                                class="absolute h-max w-84 border border-black bg-[rgb(243,243,243)] font-stretch-condensed shadow-2xl"
-                            >
-                                {let windowCollapsed = $state(true)}
                                 <div
-                                    class="pinstripe remove-font-smoothing block flex h-4 w-full flex-row items-center justify-between border border-[rgb(218,218,252)] text-xs font-bold"
+                                    use:draggable
+                                    class="absolute h-max w-48 border-2 border-[rgb(255,192,226)] bg-[rgb(254,218,237)] text-xs font-extralight tracking-wider font-stretch-condensed"
+                                    style="top: 148px; left: 120px;font-family: Geneva, sans-serif"
                                 >
-                                    <div class="win-btn mb-0.5 block opacity-0" aria-label="Collapse"></div>
-                                    <span class="block h-full bg-[rgb(243,243,243)] px-2 tracking-wider"> Like Classic Macs? (or just apps)</span>
-                                    <div onclick={(windowCollapsed = !windowCollapsed)} class="win-btn mb-0.5 block text-xs" aria-label="Collapse"></div>
+                                    <div class=" checkered-pink-bg h-3 w-full"></div>
+                                    <span class="remove-font-smoothing" contenteditable="true"> running until Sept. 7!!! </span>
                                 </div>
-                                {#if !windowCollapsed}
-                                    <div class="h-0.75 border-y-1"></div>
-                                    <div class="remove-font- grid grid-cols-2 bg-white p-2">
-                                        <button class="block flex cursor-pointer appearance-none flex-col items-center justify-center" onclick={() => (currentScreen = 1)}>
-                                            <img src={readme} class="h-8 w-8 [image-rendering:pixelated]" />
-                                            <div class="text-[10px]">Create an app!</div>
-                                        </button>
-                                        <div class="flex flex-col items-center justify-center">
-                                            <img src={finder} class="h-8 w-8 [image-rendering:pixelated]" />
-                                            <div class="text-[10px]">Other guides</div>
-                                        </div>
-                                    </div>
-                                {/if}
-                            </div>
 
-                            <div
-                                use:draggable
-                                class="absolute h-max w-48 border-2 border-[rgb(166,247,175)] bg-[rgb(217,251,218)] text-lg font-extralight tracking-wider font-stretch-condensed"
-                                style="top: 128px; left: 360px;font-family: Geneva, sans-serif"
-                            >
-                                <div class=" checkered-green-bg h-3 w-full"></div>
-                                <span class="remove-font-smoothing" contenteditable="true"> a Hack Club YSWS </span>
-                            </div>
+                                <div
+                                    use:draggable
+                                    class="absolute h-max w-96 border-2 border-[rgb(198,198,250)] bg-[rgb(218,218,252)] text-sm font-extralight tracking-wider font-stretch-condensed"
+                                    style="font-family: Geneva, sans-serif; top: 180px; left:20px;"
+                                >
+                                    <div class=" checkered-blue-bg h-3 w-full"></div>
+                                    <span class="remove-font-smoothing" contenteditable="true">
+                                        Bring obsolete devices back to the Internet-connected future. Get cool stuff to make yourself modern.
+                                    </span>
+                                </div>
 
-                            <div
-                                use:draggable
-                                class="absolute h-max w-48 border-2 border-[rgb(255,192,226)] bg-[rgb(254,218,237)] text-xs font-extralight tracking-wider font-stretch-condensed"
-                                style="top: 148px; left: 120px;font-family: Geneva, sans-serif"
-                            >
-                                <div class=" checkered-pink-bg h-3 w-full"></div>
-                                <span class="remove-font-smoothing" contenteditable="true"> running until Sept. 7!!! </span>
-                            </div>
+                                <div
+                                    use:draggable
+                                    class="absolute h-max w-72 border-2 border-[rgb(218,218,218)] bg-[rgb(218,218,218)] text-sm font-extralight tracking-wider font-stretch-condensed"
+                                    style="font-family: Geneva, sans-serif; top: 422px; left:375px;"
+                                >
+                                    <div class=" checkered-gray-bg h-3 w-full"></div>
+                                    <span class="remove-font-smoothing text-[10px]" contenteditable="true">
+                                        made w/l &lt;&gt; by atomtables (adithiya venkatakrishnan)
+                                    </span>
+                                </div>
 
-                            <div
-                                use:draggable
-                                class="absolute h-max w-96 border-2 border-[rgb(198,198,250)] bg-[rgb(218,218,252)] text-sm font-extralight tracking-wider font-stretch-condensed"
-                                style="font-family: Geneva, sans-serif; top: 180px; left:20px;"
-                            >
-                                <div class=" checkered-blue-bg h-3 w-full"></div>
-                                <span class="remove-font-smoothing" contenteditable="true">
-                                    Bring obsolete devices back to the Internet-connected future. Get cool stuff to make yourself modern.
-                                </span>
-                            </div>
+                                <div
+                                    use:draggable
+                                    class="absolute h-max w-60 border-2 border-[rgb(227,198,250)] bg-[rgb(238,218,252)] text-xs font-extralight tracking-wider font-stretch-condensed"
+                                    style="font-family: Geneva, sans-serif; top: 268px; left:20px;"
+                                >
+                                    <div class=" checkered-purple-bg h-3 w-full"></div>
+                                    <span class="remove-font-smoothing" contenteditable="true">
+                                        <b>Why?</b>
+                                        <br />
+                                        Do you remember back when you could turn on that old laptop in your attic, and just use it normally? No?
+                                        <br />
+                                        Well, let's fix that!
+                                        <br />
+                                        (by the way, click Next Section for more information! This is (mostly) interactive.)
+                                    </span>
+                                </div>
 
-                            <div
-                                use:draggable
-                                class="absolute h-max w-72 border-2 border-[rgb(218,218,218)] bg-[rgb(218,218,218)] text-sm font-extralight tracking-wider font-stretch-condensed"
-                                style="font-family: Geneva, sans-serif; top: 422px; left:375px;"
-                            >
-                                <div class=" checkered-gray-bg h-3 w-full"></div>
-                                <span class="remove-font-smoothing text-[10px]" contenteditable="true">
-                                    made w/l &lt;&gt; by atomtables (adithiya venkatakrishnan)
-                                </span>
+                                <img src={controlstrip} class="absolute bottom-0 left-0 mb-6" />
                             </div>
-
-                            <div
-                                use:draggable
-                                class="absolute h-max w-60 border-2 border-[rgb(227,198,250)] bg-[rgb(238,218,252)] text-xs font-extralight tracking-wider font-stretch-condensed"
-                                style="font-family: Geneva, sans-serif; top: 240px; left:20px;"
-                            >
-                                <div class=" checkered-purple-bg h-3 w-full"></div>
-                                <span class="remove-font-smoothing" contenteditable="true">
-                                    <b>Why?</b>
-                                    <br />
-                                    Do you remember back when you could turn on that old laptop in your attic, and just use it normally? No?
-                                    <br />
-                                    Well, let's fix that!
-                                    <br />
-                                    (by the way, click Next Section for more information! This is (mostly) interactive.)
-                                </span>
-                            </div>
-
-                            <img src={controlstrip} class="absolute bottom-0 left-0 mb-6" />
                         </div>
                     </div>
                 </div>
@@ -391,11 +410,11 @@ If you're more advanced, okay with weird troubleshooting, and own a mac, you can
             .win95-font {
                 font-family: 'W95F', sans-serif;
                 letter-spacing: 0.75px;
-                -webkit-font-smoothing: none;
+/*                -webkit-font-smoothing: none;
                 font-smooth: never;
                 -webkit-font-smoothing: none;
                 text-rendering: optimizeSpeed;
-                image-rendering: pixelated;
+                image-rendering: pixelated;*/
                 font-size: 11px;
             }
 
@@ -487,160 +506,165 @@ If you're more advanced, okay with weird troubleshooting, and own a mac, you can
             }
         </style>
 
-        <div class="win95-font aspect-[4/3] h-full" transition:slide>
-            <div class="h-full p-5">
-                <div class="relative box-border aspect-[4/3] h-full min-h-120 overflow-hidden rounded-2xl border-[32px] border-gray-300 bg-[#008080] shadow-2xl">
-                    <div class="relative h-[calc(100%-28px)] w-full">
-                        <div use:draggable class="win95-raised win95-window absolute w-80 shadow-2xl" style="top: 20px; left: 32px;">
-                            {@debug currentItemIndex}
-                            <div class="win95-titlebar flex w-79 items-center justify-between px-2 py-0.5 text-xs font-bold">
-                                <span>What's the deal? (INTERACTIVE!!!)</span>
-                                <div class="no-drag flex gap-1">
-                                    <button class="win95-btn">?</button>
-                                    <button class="win95-btn">✕</button>
+        <div
+            class="relative origin-center transition-transform duration-75"
+            style="width: {VIRTUAL_WIDTH}px; height: {VIRTUAL_HEIGHT}px; transform: scale({scale});"
+        >
+            <div class="win95-font aspect-[4/3] h-full" transition:slide>
+                <div class="h-full p-5">
+                    <div class="relative box-border aspect-[4/3] h-full min-h-120 overflow-hidden rounded-2xl border-[32px] border-gray-300 bg-[#008080] shadow-2xl">
+                        <div class="relative h-[calc(100%-28px)] w-full">
+                            <div use:draggable class="win95-raised win95-window absolute w-80 shadow-2xl" style="top: 20px; left: 32px;">
+                                {@debug currentItemIndex}
+                                <div class="win95-titlebar flex w-79 items-center justify-between px-2 py-0.5 text-xs font-bold">
+                                    <span>What's the deal? (INTERACTIVE!!!)</span>
+                                    <div class="no-drag flex gap-1">
+                                        <button class="win95-btn">?</button>
+                                        <button class="win95-btn">✕</button>
+                                    </div>
                                 </div>
-                            </div>
 
-                            {#if currentItemIndex == 0}
-                                <div class="flex items-start gap-3 p-3">
-                                    <div>
-                                        <h2 class="mb-1 text-sm font-bold">You ship?</h2>
-                                        <p class="text-xs leading-relaxed">
-                                            Something new, something old.<br />
-                                            or something never seen before.
-                                        </p>
+                                {#if currentItemIndex == 0}
+                                    <div class="flex items-start gap-3 p-3">
+                                        <div>
+                                            <h2 class="mb-1 text-sm font-bold">You ship?</h2>
+                                            <p class="text-xs font-bold leading-relaxed">
+                                                Something new, something old.<br />
+                                                or something never seen before.
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
-                            {:else if currentItemIndex == 1}
-                                <div class="flex items-start gap-3 p-3">
-                                    <div>
-                                        <h2 class="mb-1 text-sm font-bold">We ship?</h2>
-                                        <p class="text-xs leading-relaxed">
-                                            Something tried, something true,<br />
-                                            or something worthy of the blue.
-                                        </p>
+                                {:else if currentItemIndex == 1}
+                                    <div class="flex items-start gap-3 p-3">
+                                        <div>
+                                            <h2 class="mb-1 text-sm font-bold">We ship?</h2>
+                                            <p class="text-xs font-bold leading-relaxed">
+                                                Something tried, something true,<br />
+                                                or something worthy of the blue.
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
-                            {:else if currentItemIndex == 2}
-                                <div class="flex items-start gap-3 p-3">
-                                    <div>
-                                        <h2 class="mb-1 text-sm font-bold">The gist</h2>
-                                        <ul class="list-inside list-disc">
-                                            <li>Create a new app that <i>backports</i> functionality from modern day.</li>
-                                            <li>
-                                                Patch an older app to <i>restore</i> functionality to work with modern day.
-                                            </li>
-                                            <li>
-                                                Make a regular app, something you like, and have it be <i>backwards-compatible</i>
-                                                with your chosen platform.
-                                            </li>
-                                        </ul>
+                                {:else if currentItemIndex == 2}
+                                    <div class="flex items-start gap-3 p-3">
+                                        <div>
+                                            <h2 class="mb-1 text-sm font-bold">The gist</h2>
+                                            <ul class="list-inside font-bold list-disc">
+                                                <li>Create a new app that <i>backports</i> functionality from modern day.</li>
+                                                <li>
+                                                    Patch an older app to <i>restore</i> functionality to work with modern day.
+                                                </li>
+                                                <li>
+                                                    Make a regular app, something you like, and have it be <i>backwards-compatible</i>
+                                                    with your chosen platform.
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
-                                </div>
-                            {:else if currentItemIndex == 3}
-                                <div class="flex items-start gap-3 p-3">
-                                    <div>
-                                        <h2 class="mb-1 text-sm font-bold">And you get?</h2>
-                                        <ul class="list-inside list-disc">
-                                            <li>A grant to get old technology, maybe to even start your next project.</li>
-                                            <li>A new gadget, part, or item (like a USB hard drive or 256MB ddr2 RAM) as an upgrade.</li>
-                                            <li>An online gift card to sites like iFixit that sell parts and tools for you to keep good tech from being e-waste.</li>
-                                        </ul>
+                                {:else if currentItemIndex == 3}
+                                    <div class="flex items-start gap-3 p-3">
+                                        <div>
+                                            <h2 class="mb-1 text-sm font-bold">And you get?</h2>
+                                            <ul class="list-inside font-bold list-disc">
+                                                <li>A grant to get old technology, maybe to even start your next project.</li>
+                                                <li>A new gadget, part, or item (like a USB hard drive or 256MB ddr2 RAM) as an upgrade.</li>
+                                                <li>An online gift card to sites like iFixit that sell parts and tools for you to keep good tech from being e-waste.</li>
+                                            </ul>
+                                        </div>
                                     </div>
-                                </div>
-                            {/if}
-
-                            <div class="flex justify-end gap-2 p-2">
-                                <button class="win95-action-btn no-drag text-xs" onclick={() => currentItemIndex != 0 && currentItemIndex--}>Previous </button>
-                                {#if currentItemIndex != 3}
-                                    <button class="win95-action-btn no-drag text-xs font-bold" onclick={() => currentItemIndex++}>
-                                        {currentItemIndex == 1 ? 'Yo unc speak in english' : 'Next'}
-                                    </button>
                                 {/if}
-                            </div>
-                        </div>
 
-                        <div use:draggable class="win95-raised win95-window absolute w-72 shadow-2xl" style="top: 72px; left: 348px;">
-                            <div class="win95-titlebar flex items-center justify-between px-2 py-0.5 text-xs font-bold">
-                                <span>More Info</span>
-                                <div class="no-drag flex gap-1">
-                                    <button class="win95-btn">_</button>
-                                    <button class="win95-btn">□</button>
-                                    <button class="win95-btn">✕</button>
+                                <div class="flex justify-end gap-2 p-2">
+                                    <button class="win95-action-btn no-drag text-xs" onclick={() => currentItemIndex != 0 && currentItemIndex--}>Previous </button>
+                                    {#if currentItemIndex != 3}
+                                        <button class="win95-action-btn no-drag text-xs font-bold" onclick={() => currentItemIndex++}>
+                                            {currentItemIndex == 1 ? 'Yo unc speak in english' : 'Next'}
+                                        </button>
+                                    {/if}
                                 </div>
                             </div>
 
-                            <div class="flex gap-3 border-b border-gray-400 px-2 py-1 text-xs">
-                                <span><span class="underline">F</span>ile</span>
-                                <span><span class="underline">E</span>dit</span>
-                                <span><span class="underline">V</span>iew</span>
-                                <span><span class="underline">H</span>elp</span>
-                            </div>
-
-                            <div class="win95-sunken m-1 grid h-36 grid-cols-2 gap-4 overflow-y-auto p-3">
-                                <button onclick={() => currentScreen--} class="group flex cursor-pointer flex-col items-center text-center">
-                                    <img src={winfolder} class="h-8 w-8 [image-rendering:pixelated]" alt="Section" />
-                                    <span class="mt-1 px-0.5 text-[10px] group-hover:bg-[#000080] group-hover:text-white">Previous Section</span>
-                                </button>
-                                <button onclick={() => currentScreen++} class="group flex cursor-pointer flex-col items-center text-center">
-                                    <img src={winfolder} class="h-8 w-8 [image-rendering:pixelated]" alt="Section" />
-                                    <span class="mt-1 px-0.5 text-[10px] group-hover:bg-[#000080] group-hover:text-white">Next Section</span>
-                                </button>
-                                <div class="group flex cursor-pointer flex-col items-center text-center">
-                                    <img src={win95} class="h-8 w-8 [image-rendering:pixelated]" alt="Classic App" />
-                                    <span class="mt-1 px-0.5 text-[10px] group-hover:bg-[#000080] group-hover:text-white">Make a Windows app!</span>
+                            <div use:draggable class="win95-raised win95-window absolute w-72 shadow-2xl" style="top: 72px; left: 348px;">
+                                <div class="win95-titlebar flex items-center justify-between px-2 py-0.5 text-xs font-bold">
+                                    <span>More Info</span>
+                                    <div class="no-drag flex gap-1">
+                                        <button class="win95-btn">_</button>
+                                        <button class="win95-btn">□</button>
+                                        <button class="win95-btn">✕</button>
+                                    </div>
                                 </div>
-                                <button
-                                    onclick={() => window.open('https://forms.hackclub.com/t/gA2V9LjKaDus', '__blank')}
-                                    class="group flex cursor-pointer flex-col items-center text-center"
-                                >
-                                    <img src={wincom} class="h-8 w-8 [image-rendering:pixelated]" alt="Account" />
-                                    <span class="mt-1 px-0.5 text-[10px] group-hover:bg-[#000080] group-hover:text-white">Join us!!!</span>
-                                </button>
-                            </div>
-                        </div>
 
-                        <div use:draggable class="win95-raised absolute w-108 shadow-2xl" style="top: 268px; left: 16px;">
-                            <div class="win95-titlebar flex items-center justify-between px-2 py-0.5 text-xs font-bold">
-                                <span>Why.txt - Notepad</span>
-                                <div class="no-drag flex gap-1">
-                                    <button class="win95-btn">_</button>
-                                    <button class="win95-btn">□</button>
-                                    <button class="win95-btn">✕</button>
+                                <div class="flex gap-3 border-b border-gray-400 px-2 py-1 text-xs">
+                                    <span><span class="underline">F</span>ile</span>
+                                    <span><span class="underline">E</span>dit</span>
+                                    <span><span class="underline">V</span>iew</span>
+                                    <span><span class="underline">H</span>elp</span>
+                                </div>
+
+                                <div class="win95-sunken m-1 grid h-36 grid-cols-2 gap-4 overflow-y-auto p-3">
+                                    <button onclick={() => currentScreen--} class="group flex cursor-pointer flex-col items-center text-center">
+                                        <img src={winfolder} class="h-8 w-8 [image-rendering:pixelated]" alt="Section" />
+                                        <span class="mt-1 px-0.5 text-xs font-bold group-hover:bg-[#000080] group-hover:text-white">Previous Section</span>
+                                    </button>
+                                    <button onclick={() => currentScreen++} class="group flex cursor-pointer flex-col items-center text-center">
+                                        <img src={winfolder} class="h-8 w-8 [image-rendering:pixelated]" alt="Section" />
+                                        <span class="mt-1 px-0.5 text-xs font-bold group-hover:bg-[#000080] group-hover:text-white">Next Section</span>
+                                    </button>
+                                    <div class="group flex cursor-pointer flex-col items-center text-center">
+                                        <img src={win95} class="h-8 w-8 [image-rendering:pixelated]" alt="Classic App" />
+                                        <span class="mt-1 px-0.5 text-xs font-bold group-hover:bg-[#000080] group-hover:text-white">Make a Windows app!</span>
+                                    </div>
+                                    <button
+                                        onclick={() => window.open('https://forms.hackclub.com/t/gA2V9LjKaDus', '__blank')}
+                                        class="group flex cursor-pointer flex-col items-center text-center"
+                                    >
+                                        <img src={wincom} class="h-8 w-8 [image-rendering:pixelated]" alt="Account" />
+                                        <span class="mt-1 px-0.5 text-xs font-bold group-hover:bg-[#000080] group-hover:text-white">Join us!!!</span>
+                                    </button>
                                 </div>
                             </div>
 
-                            <div class="win95-sunken no-drag m-1 h-28 overflow-y-auto p-2 font-mono text-xs leading-tight">
-                                <pre
-                                    contenteditable="true"
-                                    class="whitespace-pre-wrap">If you're between the ages of 13-18, there might be a time in your infancy where you saw a computer from the '00s actually connect to the Internet.<br
-                                    /><br
-                                    />If you miss that, then this You-Ship-We-Ship is for YOU!!! Yes you, that one person who's been looking for a reason to mess around with that ancient laptop in the attic! And you over there who wants to try to do something with a phone from before you were born! and ESPECIALLY you, that person who wants to save a piece of history from the landfill, or worse, ebay...
-                                </pre>
-                            </div>
-                        </div>
-                    </div>
+                            <div use:draggable class="win95-raised absolute w-108 shadow-2xl" style="top: 268px; left: 16px;">
+                                <div class="win95-titlebar flex items-center justify-between px-2 py-0.5 text-xs font-bold">
+                                    <span>Why.txt - Notepad</span>
+                                    <div class="no-drag flex gap-1">
+                                        <button class="win95-btn">_</button>
+                                        <button class="win95-btn">□</button>
+                                        <button class="win95-btn">✕</button>
+                                    </div>
+                                </div>
 
-                    <div class="absolute bottom-6.5 right-0 text-white text-right p-0.5">
-                        <div>Back to the Future</div>
-                        <div>Still by atomtables (adithiya venkatakrishnan)</div>
-                    </div>
-
-                    <div class="win95-raised absolute right-0 bottom-0 left-0 z-50 flex h-7 items-center justify-between px-1">
-                        <button class="win95-action-btn flex h-5 items-center gap-1 py-0.5 text-xs font-bold tracking-wider">
-                            <img src={win95} class="[image-rendering:pixelated]" />
-                            <span class="font-w95 remove-font-smoothing">Start</span>
-                        </button>
-
-                        <div class="flex flex-1 gap-1 overflow-x-auto px-2">
-                            <div class="win95-sunken flex w-28 items-center gap-1 truncate bg-gray-200 px-2 py-0.5 text-xs font-bold">
-                                <img src={readme} class="h-3.5 w-3.5 [image-rendering:pixelated]" alt="Task Icon" />
-                                <span>Welcome</span>
+                                <div class="win95-sunken no-drag m-1 h-28 overflow-y-auto p-2 font-mono text-xs leading-tight">
+                                    <pre
+                                        contenteditable="true"
+                                        class="whitespace-pre-wrap">If you're between the ages of 13-18, there might be a time in your infancy where you saw a computer from the '00s actually connect to the Internet.<br
+                                        /><br
+                                        />If you miss that, then this You-Ship-We-Ship is for YOU!!! Yes you, that one person who's been looking for a reason to mess around with that ancient laptop in the attic! And you over there who wants to try to do something with a phone from before you were born! and ESPECIALLY you, that person who wants to save a piece of history from the landfill, or worse, ebay...
+                                    </pre>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="win95-inset flex h-5 items-center gap-2 bg-[#c0c0c0] px-3 py-0.5 text-xs">
-                            <span>12:47 AM</span>
+                        <div class="absolute bottom-6.5 right-0 text-white text-right p-0.5">
+                            <div>Back to the Future</div>
+                            <div>Still by atomtables (adithiya venkatakrishnan)</div>
+                        </div>
+
+                        <div class="win95-raised absolute right-0 bottom-0 left-0 z-50 flex h-7 items-center justify-between px-1">
+                            <button class="win95-action-btn flex h-5 items-center gap-1 py-0.5 text-xs font-bold tracking-wider">
+                                <img src={win95} class="[image-rendering:pixelated]" />
+                                <span class="font-w95 remove-font-smoothing">Start</span>
+                            </button>
+
+                            <div class="flex flex-1 gap-1 overflow-x-auto px-2">
+                                <div class="win95-sunken flex w-28 items-center gap-1 truncate bg-gray-200 px-2 py-0.5 text-xs font-bold">
+                                    <img src={readme} class="h-3.5 w-3.5 [image-rendering:pixelated]" alt="Task Icon" />
+                                    <span>Welcome</span>
+                                </div>
+                            </div>
+
+                            <div class="win95-inset flex h-5 items-center gap-2 bg-[#c0c0c0] px-3 py-0.5 text-xs">
+                                <span>12:47 AM</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -725,6 +749,10 @@ If you're more advanced, okay with weird troubleshooting, and own a mac, you can
                 box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
             }
         </style>
+        <div
+            class="relative origin-center transition-transform duration-75"
+            style="width: {VIRTUAL_WIDTH}px; height: {VIRTUAL_HEIGHT}px; transform: scale({scale});"
+        >
         <div class="aspect-[4/3] h-full" transition:slide>
             <div class="h-full p-5">
                 <div class="relative box-border aspect-[4/3] h-full min-h-120 overflow-hidden rounded-3xl border-[24px] border-black bg-black shadow-2xl">
@@ -801,5 +829,10 @@ If you're more advanced, okay with weird troubleshooting, and own a mac, you can
                 </div>
             </div>
         </div>
+    </div>
     {/if}
+</div>
+
+<div class="max-sm:block hidden fixed top-8 text-black font-sans font-bold bg-white w-full text-center text-sm">
+    You should use Landscape mode for the best experience!
 </div>

@@ -22,71 +22,64 @@
         let startX: number, startY: number;
         let startLeft: number, startTop: number;
 
-        function handleMouseDown(e: MouseEvent) {
+        node.style.touchAction = 'none';
+
+        function handleMouseDown(e: PointerEvent) {
             if (e.target.closest('pre')) return;
             if (e.target.closest('[contenteditable]')) return;
             isDragging = true;
 
-            // Get current mouse position
             startX = e.clientX;
             startY = e.clientY;
-
-            // Get current element position (default to 0 if not set)
             startLeft = parseInt(node.style.left) || 0;
             startTop = parseInt(node.style.top) || 0;
 
-            // Listen to window events so dragging continues if mouse moves fast
-            window.addEventListener('mousemove', handleMouseMove);
-            window.addEventListener('mouseup', handleMouseUp);
+            window.addEventListener('pointermove', handleMouseMove);
+            window.addEventListener('pointerup', handleMouseUp);
+            window.addEventListener('pointercancel', handleMouseUp);
 
             node.style.zIndex = String(ind++);
         }
 
-        function handleMouseMove(e: MouseEvent) {
+        function handleMouseMove(e: PointerEvent) {
             if (!isDragging) return;
             window.getSelection()?.removeAllRanges();
 
-            // Calculate how far the mouse has moved
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
+            const dx = (e.clientX - startX) / scale;
+            const dy = (e.clientY - startY) / scale;
 
-            // Get parent boundaries to restrict movement
             const parent = node.parentElement;
             const parentRect = parent?.getBoundingClientRect();
             const nodeRect = node.getBoundingClientRect();
 
-            // Calculate new proposed positions
             let newLeft = startLeft + dx;
             let newTop = startTop + dy;
 
-            // Keep element within the horizontal boundaries of the parent
-            const maxLeft = parentRect!.width - nodeRect.width;
+            const maxLeft = (parentRect!.width - nodeRect.width) / scale;
             newLeft = Math.max(0, Math.min(newLeft, maxLeft));
 
-            // Keep element within the vertical boundaries of the parent
-            const maxTop = parentRect!.height - nodeRect.height - 24;
+            const maxTop = ((parentRect!.height - nodeRect.height) / scale) - 24;
             newTop = Math.max(0, Math.min(newTop, maxTop));
 
-            // Update element styles
             node.style.left = `${newLeft}px`;
             node.style.top = `${newTop}px`;
         }
 
         function handleMouseUp() {
             isDragging = false;
-            window.removeEventListener('mousemove', handleMouseMove);
-            window.removeEventListener('mouseup', handleMouseUp);
+            window.removeEventListener('pointermove', handleMouseMove);
+            window.removeEventListener('pointerup', handleMouseUp);
+            window.removeEventListener('pointercancel', handleMouseUp);
         }
 
-        // Attach initial event listener to the element
-        node.addEventListener('mousedown', handleMouseDown);
+        node.addEventListener('pointerdown', handleMouseDown);
 
-        // Clean up event listeners when the element is destroyed
         return {
             destroy() {
-                node.removeEventListener('mousedown', handleMouseDown);
-                window.removeEventListener('mousemove', handleMouseMove);
-                window.removeEventListener('mouseup', handleMouseUp);
+                node.removeEventListener('pointerdown', handleMouseDown);
+                window.removeEventListener('pointermove', handleMouseMove);
+                window.removeEventListener('pointerup', handleMouseUp);
+                window.removeEventListener('pointercancel', handleMouseUp);
             }
         };
     }
@@ -176,6 +169,16 @@ If you're more advanced, okay with weird troubleshooting, and own a mac, you can
                 box-shadow: inset -1px -1px 0px #808080;
                 padding: 0;
                 cursor: pointer;
+            }
+            .win-btn::after {
+                content: '';
+                position: absolute;
+                width: 24px;
+                height: 24px;
+                top: -4px;
+                /*bottom: -12px;*/
+                right: -4px;
+                /*right: -12px;*/
             }
 
             br {

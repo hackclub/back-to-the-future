@@ -355,7 +355,7 @@ If you're more advanced, okay with weird troubleshooting, and own a mac, you can
                                     style="top: 148px; left: 120px;font-family: Geneva, sans-serif"
                                 >
                                     <div class=" checkered-pink-bg h-3 w-full"></div>
-                                    <span class="remove-font-smoothing" contenteditable="true"> running until Sept. 7!!! </span>
+                                    <span class="remove-font-smoothing" contenteditable="true"> running until Oct. 1!!! </span>
                                 </div>
 
                                 <div
